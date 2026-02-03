@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>បណ្ណពាក្យរំលឹកមេរៀន (Flashcards)</title>
+    <style>
+        /* ==================== Variables ==================== */
+        :root {
+            --primary-color: #0052cc;
+            --secondary-color: #007bff;
+            --success-color: #28a745;
+            --success-light: #20c997;
+            --warning-color: #ff9800;
+            --dark-color: #607d8b;
+            --bg-color: #f0f4f8;
+            --text-dark: #333;
+            --text-light: #666;
+            --shadow: 0 10px 25px rgba(0,0,0,0.2);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.1);
+            --card-width: 700px;
+            --card-height: 400px;
+            --border-radius: 20px;
+            --transition: 0.3s ease;
+        }
+
+        /* ==================== Reset & Body ==================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Khmer OS Battambang', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* ==================== Header ==================== */
+        .header { text-align: center; margin-bottom: 25px; animation: fadeInDown 0.6s ease; }
+        h1 { color: white; font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 5px; }
+        .subtitle { color: rgba(255,255,255,0.9); font-size: 16px; }
+
+        /* ==================== Progress & Counter ==================== */
+        .progress-container {
+            width: var(--card-width);
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            animation: fadeInUp 0.6s ease;
+        }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); transition: width 0.3s ease; border-radius: 10px; }
+
+        .counter { color: white; font-size: 20px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .counter-badge { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; }
+
+        /* ==================== Card Design ==================== */
+        .card-container {
+            perspective: 1500px;
+            width: var(--card-width);
+            height: var(--card-height);
+            cursor: pointer;
+            margin-bottom: 25px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .card {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .card.flipped { transform: rotateY(180deg); }
+
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-radius: var(--border-radius); padding: 40px; text-align: center;
+        }
+
+        .card-front { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; transform: rotateY(0deg); }
+        .card-front .main-text { font-size: 80px; font-weight: bold; margin-bottom: 10px; }
+        .card-front .pinyin-text { font-size: 32px; opacity: 0.9; font-weight: normal; margin-bottom: 20px; color: #ffeb3b; }
+        .card-front .hint { font-size: 16px; opacity: 0.7; margin-top: auto; font-style: italic; }
+
+        .card-back { background: linear-gradient(135deg, var(--success-color), var(--success-light)); color: white; transform: rotateY(180deg); }
+        .card-back .main-text { font-size: 55px; font-weight: bold; font-family: 'Khmer OS Battambang'; line-height: 1.4; }
+
+        /* ==================== Controls ==================== */
+        .controls { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+        button { padding: 12px 30px; font-size: 18px; border: none; border-radius: 50px; cursor: pointer; font-family: 'Khmer OS Battambang'; font-weight: bold; transition: all 0.2s ease; box-shadow: var(--shadow-sm); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
+        .btn-primary { background: linear-gradient(135deg, var(--warning-color), #ff6f00); color: white; }
+        .btn-secondary { background: linear-gradient(135deg, var(--dark-color), #455a64); color: white; }
+        .btn-success { background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; font-size: 14px; padding: 10px 20px; }
+
+        /* ==================== Footer ==================== */
+        .footer { position: fixed; bottom: 10px; font-size: 12px; color: rgba(255,255,255,0.7); text-align: center; }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            :root { --card-width: 90vw; --card-height: 320px; }
+            .card-front .main-text { font-size: 60px; }
+            .card-front .pinyin-text { font-size: 24px; }
+            .card-back .main-text { font-size: 38px; }
+            .controls { flex-direction: column; width: 90vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>📚 បណ្ណពាក្យរំលឹកមេរៀន</h1>
+        <p class="subtitle">បច្ចេកទេសផលិតកង់ (Factory & QC Vocabulary)</p>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="counter">
+        <span>ពាក្យទី</span>
+        <span class="counter-badge"><span id="currentIdx">1</span> / <span id="totalIdx">0</span></span>
+    </div>
+
+    <div class="card-container" onclick="flipCard()">
+        <div class="card" id="flashcard">
+            <div class="card-face card-front">
+                <div class="main-text" id="text-cn">工厂</div>
+                <div class="pinyin-text" id="text-py">(Gōngchǎng)</div>
+                <div class="hint">👆 ចុចដើម្បីមើលការបកប្រែ</div>
+            </div>
+            <div class="card-face card-back">
+                <div class="main-text" id="text-km">រោងចក្រ</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-secondary" onclick="prevCard()">⬅️ ថយក្រោយ</button>
+        <button class="btn-primary" onclick="flipCard()">🔄 ត្រឡប់កាត</button>
+        <button class="btn-primary" onclick="nextCard()">បន្ទាប់ ➡️</button>
+        <button class="btn-success" onclick="shuffleCards()">🔀 សាចឡើងវិញ</button>
+    </div>
+
+    <div class="footer">💡 Space/Enter=ត្រឡប់, ⬅️➡️=រុករក</div>
+
+    <script>
+        const vocabList = [
+            // --- ១២ ពាក្យថ្មី (បន្ថែមថ្មី) ---
+            { cn: "起泡", py: "(Qǐ pào)", km: "ពង / ចូលខ្យល់" },
+            { cn: "标纸不良", py: "(Biāo zhǐ bù liáng)", km: "តែមមិនល្អ" },
+            { cn: "修补痕", py: "(Xiū bǔ hén)", km: "ស្នាមជួសជុល / ស្នាមកែ" },
+            { cn: "杂质", py: "(Zá zhì)", km: "ធូលី / កំទេចកំទី" },
+            { cn: "脏污", py: "(Zāng wū)", km: "ប្រឡាក់" },
+            { cn: "标纸位置不对", py: "(Biāo zhǐ wèi zhì bù duì)", km: "បិទតែមខុសទីតាំង" },
+            { cn: "标纸不对称", py: "(Biāo zhǐ bù duì chèn)", km: "បិទតែមមិនស្មើគ្នា" },
+            { cn: "雾面", py: "(Wù miàn)", km: "ស្រអាប់" },
+            { cn: "橘皮", py: "(Jú pí)", km: "សំបកក្រូច" },
+            { cn: "针孔", py: "(Zhēn kǒng)", km: "រន្ធម្ជុល" },
+            { cn: "消光不良", py: "(Xiāo guāng bù liáng)", km: "ទឹកថ្នាំស្រអាប់មិនល្អ" },
+            { cn: "防漆不良", py: "(Fáng qī bù liáng)", km: "ការពារទឹកថ្នាំមិនបានល្អ" },
+
+            // --- ៣៧ ពាក្យចាស់ ---
+            { cn: "工厂", py: "(Gōngchǎng)", km: "រោងចក្រ" },
+            { cn: "车间", py: "(Chējiān)", km: "រោងជាង / អាគារ" },
+            { cn: "办公室", py: "(Bàngōngshì)", km: "ការិយាល័យ" },
+            { cn: "班长", py: "(Bānzhǎng)", km: "ប្រធានក្រុម" },
+            { cn: "翻译", py: "(Fānyì)", km: "អ្នកបកប្រែ" },
+            { cn: "注意安全", py: "(Zhùyì ānquán)", km: "ប្រយ័ត្នសុវត្ថិភាព" },
+            { cn: "上班", py: "(Shàngbān)", km: "ចូលធ្វើការ" },
+            { cn: "下班", py: "(Xiàbān)", km: "ចេញពីធ្វើការ" },
+            { cn: "请假", py: "(Qǐngjià)", km: "សុំច្បាប់" },
+            { cn: "车架", py: "(Chējià)", km: "តួកង់" },
+            { cn: "前叉", py: "(Qiánchā)", km: "ឆ្ពោះមុខ (Fork)" },
+            { cn: "车把", py: "(Chēbǎ)", km: "ដៃកង់" },
+            { cn: "车圈", py: "(Chēquān)", km: "ខ្នងកង់" },
+            { cn: "外胎", py: "(Wàitāi)", km: "សំបកកង់" },
+            { cn: "脚踏", py: "(Jiǎotà)", km: "ឈ្នាន់" },
+            { cn: "链条", py: "(Liàntiáo)", km: "ច្រវាក់" },
+            { cn: "座垫", py: "(Zuòdiàn)", km: "កែប" },
+            { cn: "刹车", py: "(Shāchē)", km: "ហ្វ្រាំង" },
+            { cn: "测量值", py: "(Cèliáng zhí)", km: "តម្លៃវាស់ជាក់ស្តែង" },
+            { cn: "标准值", py: "(Biāozhǔn zhí)", km: "តម្លៃស្តង់ដា" },
+            { cn: "上限", py: "(Shàngxiàn)", km: "ដែនកំណត់ លើ" },
+            { cn: "下限", py: "(Xiàxiàn)", km: "ដែនកំណត់ ក្រោម" },
+            { cn: "趋势图", py: "(Qūshì tú)", km: "ក្រាបនិន្នាការ" },
+            { cn: "合格", py: "(Hégé)", km: "ជាប់ (OK)" },
+            { cn: "不合格", py: "(Bù hégé)", km: "ធ្លាក់ (NG)" },
+            { cn: "开裂", py: "(Kāiliè)", km: "ប្រេះ (Crack)" },
+            { cn: "焊破", py: "(Hànpò)", km: "ផ្សាធ្លុះ" },
+            { cn: "漏焊", py: "(Lòuhàn)", km: "ភ្លេចផ្សារ" },
+            { cn: "针眼", py: "(Zhēnyǎn)", km: "ភ្នែកម្ជុល (Pin hole)" },
+            { cn: "凹陷", py: "(Āoxiàn)", km: "កំពិត / ផត" },
+            { cn: "焊道偏心", py: "(Hàndào piānxīn)", km: "ផ្សារវៀច" },
+            { cn: "电击伤", py: "(Diànjí shāng)", km: "ឆេះម៉ាស (Arc strike)" },
+            { cn: "堆焊", py: "(Duīhàn)", km: "ផ្សារទូល (Overlap)" },
+            { cn: "咬边", py: "(Yǎobiān)", km: "ស៊ីសាច់បំពង់ (Undercut)" },
+            { cn: "间隙", py: "(Jiànxì)", km: "ចន្លោះ / ហើប (Gap)" },
+            { cn: "碰刮伤", py: "(Pèngguā shāng)", km: "ប៉ះទង្គិច / កោស" },
+            { cn: "焊渣", py: "(Hànzhā)", km: "កំទេចផ្សារ" }
+        ];
+
+        let currentIndex = 0;
+        const card = document.getElementById('flashcard');
+        const cnText = document.getElementById('text-cn');
+        const pyText = document.getElementById('text-py');
+        const kmText = document.getElementById('text-km');
+        const currentIdxSpan = document.getElementById('currentIdx');
+        const totalIdxSpan = document.getElementById('totalIdx');
+        const progressBar = document.getElementById('progressBar');
+
+        function init() {
+            totalIdxSpan.innerText = vocabList.length;
+            setWord();
+        }
+
+        function setWord() {
+            if (card.classList.contains('flipped')) card.classList.remove('flipped');
+            cnText.innerText = vocabList[currentIndex].cn;
+            pyText.innerText = vocabList[currentIndex].py;
+            kmText.innerText = vocabList[currentIndex].km;
+            currentIdxSpan.innerText = currentIndex + 1;
+
+            // Resize text based on length
+            if (kmText.innerText.length > 20) kmText.style.fontSize = "32px";
+            else if (kmText.innerText.length > 15) kmText.style.fontSize = "40px";
+            else kmText.style.fontSize = "55px";
+
+            const progress = ((currentIndex + 1) / vocabList.length) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        function flipCard() { card.classList.toggle('flipped'); }
+        function nextCard() { if (currentIndex < vocabList.length - 1) { currentIndex++; setWord(); } }
+        function prevCard() { if (currentIndex > 0) { currentIndex--; setWord(); } }
+
+        function shuffleCards() {
+            for (let i = vocabList.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [vocabList[i], vocabList[j]] = [vocabList[j], vocabList[i]];
+            }
+            currentIndex = 0;
+            setWord();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'Enter') flipCard();
+            if (e.code === 'ArrowRight') nextCard();
+            if (e.code === 'ArrowLeft') prevCard();
+        });
+
+        init();
+    </script>
+</body>
+</html>
