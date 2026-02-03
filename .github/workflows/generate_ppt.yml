@@ -1,20 +1,25 @@
 name: Generate PowerPoint
-on: [push] # រត់រាល់ពេលមានការ Commit កូដថ្មី
+on: [push]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4 # Update ទៅ v4
+      
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5 # Update ទៅ v5
         with:
           python-version: '3.9'
+          
       - name: Install dependencies
         run: pip install python-pptx
+        
       - name: Generate PPT
-        run: python lesson_generator.py
-      - name: Upload PPT
-        uses: actions/upload-artifact@v2
+        run: python lesson_generator.py # ប្រាកដថា File Python របស់អ្នកឈ្មោះនេះ
+        
+      - name: Upload PPT Result
+        uses: actions/upload-artifact@v4 # នេះគឺជាចំណុចដែលត្រូវកែឱ្យវាដើរវិញ
         with:
-          name: PowerPoint-Output
-          path: "*.pptx" # ទាញយកគ្រប់ file ដែលមានកន្ទុយ .pptx
+          name: PowerPoint-Presentation
+          path: "*.pptx"
