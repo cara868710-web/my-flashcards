@@ -6,10 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # ប្រើ v4
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5  # ប្រើ v5
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
           
@@ -17,10 +17,10 @@ jobs:
         run: pip install python-pptx
         
       - name: Generate PPT
-        run: python lesson_generator.py  # ប្រាកដថា File Python របស់អ្នកមានឈ្មោះបេះបិទនេះ
+        run: python lesson_generator.py
         
       - name: Upload PPT Result
-        uses: actions/upload-artifact@v4  # ចំណុចសំខាន់បំផុត ត្រូវតែ v4
+        uses: actions/upload-artifact@v4
         with:
           name: PowerPoint-Output
           path: "*.pptx"
