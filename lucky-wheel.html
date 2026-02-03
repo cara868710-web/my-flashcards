@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>រង្វង់សំណាង - 品管部抽奖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Khmer OS Battambang', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Canvas សម្រាប់កាំជ្រួច */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ផ្ទៃខាងក្រោយមានភ្លឺភ្លឺ */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .background-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            opacity: 0.1;
+        }
+
+        .circle-decoration {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .circle-decoration:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .circle-decoration:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+
+        .circle-decoration:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 80%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 30px;
+            font-size: 36px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .main-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 450px;
+            margin: 0 auto 30px;
+            filter: drop-shadow(0 15px 35px rgba(0,0,0,0.4));
+        }
+
+        @media (max-width: 600px) {
+            .main-container {
+                max-width: 350px;
+                height: 350px;
+            }
+        }
+
+        canvas#wheel {
+            display: block;
+            width: 100%;
+            height: 100%;
+            transform: rotate(0deg);
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        /* ព្រួញចង្អុលកាន់តែស្អាត */
+        .pointer {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-top: 60px solid #ff3b30;
+            z-index: 10;
+            filter: drop-shadow(0 4px 8px rgba(255,0,0,0.5));
+            animation: pointerBounce 1s ease-in-out infinite;
+        }
+
+        @keyframes pointerBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-8px); }
+        }
+
+        /* ចំណុចកណ្តាលកាន់តែស្រស់ */
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            border: 6px solid #333;
+            z-index: 5;
+            box-shadow: 0 0 20px rgba(255,215,0,0.6),
+                        inset 0 0 20px rgba(255,255,255,0.5);
+            animation: centerGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes centerGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.6), inset 0 0 20px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 40px rgba(255,215,0,0.9), inset 0 0 30px rgba(255,255,255,0.8); }
+        }
+
+        #result {
+            margin: 20px auto;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            min-height: 60px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: resultFade 1s ease-in-out;
+            background: rgba(255,255,255,0.15);
+            padding: 15px 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes resultFade {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ប៊ូតុងស្អាតៗ */
+        .button-container {
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        #spinBtn {
+            padding: 20px 80px;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            border: 4px solid white;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.6);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #spinBtn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        #spinBtn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        #spinBtn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255,107,107,0.8);
+        }
+
+        #spinBtn:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 5px 20px rgba(255,107,107,0.5);
+        }
+
+        #spinBtn:disabled {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #spinBtn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Animation ពេលឈ្នះ */
+        @keyframes winnerPulse {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2) rotate(-5deg); }
+            75% { transform: scale(1.2) rotate(5deg); }
+        }
+
+        .winner-animation {
+            display: inline-block;
+            animation: winnerPulse 0.6s ease-in-out 3;
+        }
+
+        /* Stars decoration */
+        .star {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: white;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* ពណ៌ប្រែប្រួលពេលវិល */
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .spinning {
+            animation: rainbow 1s linear infinite;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+            #spinBtn {
+                padding: 15px 50px;
+                font-size: 24px;
+            }
+            #result {
+                font-size: 20px;
+                padding: 10px 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Background Decoration -->
+    <div class="background-decoration">
+        <div class="circle-decoration"></div>
+        <div class="circle-decoration"></div>
+        <div class="circle-decoration"></div>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="content-wrapper">
+        <h1>🎡 កងសំណាងផ្នែក QC 🎡<br>幸运大转盘</h1>
+        
+        <div class="main-container">
+            <div class="pointer"></div>
+            <canvas id="wheel" width="800" height="800"></canvas>
+            <div class="center-circle"></div>
+        </div>
+
+        <div id="result">✨ រង់ចាំលទ្ធផល... ✨</div>
+        
+        <div class="button-container">
+            <button id="spinBtn" onclick="spin()">
+                <span>🎰 ចាប់ផ្តើម SPIN 🎰</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ========================
+        // កំណត់ឈ្មោះ និងពណ៌
+        // ========================
+        const names = [
+            "潘楠", "阿黑", "塞隆利", "嘉涵", "臻德", 
+            "苏杰", "美莲", "阿将", "阿玛", "江涛", 
+            "阿轮", "苏琶", "浩然", "娜娜"
+        ];
+
+        const colors = [
+            "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#9D4EDD",
+            "#FF9F1C", "#2EC4B6", "#E74C3C", "#F39C12", "#1ABC9C", 
+            "#3498DB", "#9B59B6", "#E67E22", "#16A085"
+        ];
+
+        // ========================
+        // គូររង្វង់
+        // ========================
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const size = canvas.width;
+        const centerX = size / 2;
+        const centerY = size / 2;
+        const radius = size / 2 - 10;
+        const totalSlices = names.length;
+        const arc = 2 * Math.PI / totalSlices;
+
+        let currentRotation = 0;
+
+        function drawWheel() {
+            ctx.clearRect(0, 0, size, size);
+            
+            // គែមក្រៅ
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = "#333";
+            ctx.stroke();
+
+            // គូរ Inner circle ស្អាត
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius - 8, 0, 2 * Math.PI);
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#ffd700";
+            ctx.stroke();
+
+            for (let i = 0; i < totalSlices; i++) {
+                const angle = i * arc - Math.PI / 2;
+
+                // គូរចំណិត
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius - 10, angle, angle + arc);
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#fff";
+                ctx.stroke();
+
+                // សរសេរឈ្មោះ
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle + arc / 2);
+                
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 40px 'Microsoft YaHei'";
+                ctx.shadowColor = "rgba(0,0,0,0.7)";
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                
+                ctx.fillText(names[i], radius - 60, 15);
+                ctx.restore();
+            }
+        }
+
+        drawWheel();
+
+        // ========================
+        // មុខងារបង្វិល
+        // ========================
+        function spin() {
+            const btn = document.getElementById('spinBtn');
+            const resultDiv = document.getElementById('result');
+            
+            if (btn.disabled) return;
+
+            btn.disabled = true;
+            resultDiv.innerHTML = "🌪️ កំពុងបង្វិល... 🌪️";
+            resultDiv.style.color = "#fff";
+
+            // បន្ថែម animation
+            canvas.classList.add('spinning');
+
+            // កំណត់អ្នកឈ្នះ
+            const winnerIndex = Math.floor(Math.random() * totalSlices);
+            const winnerName = names[winnerIndex];
+
+            const sliceDeg = 360 / totalSlices;
+            const randomOffset = (Math.random() * sliceDeg * 0.6) - (sliceDeg * 0.3);
+            const targetAngle = 360 - (winnerIndex * sliceDeg) - (sliceDeg / 2) + randomOffset;
+
+            const rounds = 5 + Math.floor(Math.random() * 3); // 5-7 ជុំ
+            const extraDegrees = 360 * rounds;
+            
+            let nextRotation = (targetAngle - (currentRotation % 360));
+            if (nextRotation < 0) nextRotation += 360;
+            
+            currentRotation += extraDegrees + nextRotation;
+
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            // បង្ហាញលទ្ធផល
+            setTimeout(() => {
+                canvas.classList.remove('spinning');
+                resultDiv.innerHTML = `🎊 អ្នកឈ្នះគឺ: <span style="color:#FFD700; font-size:40px; text-shadow: 0 0 15px #FFD700;" class="winner-animation">${winnerName}</span> 🎊`;
+                btn.disabled = false;
+                celebrate();
+                createStars();
+            }, 5500);
+        }
+
+        // ========================
+        // កាំជ្រួចអបអរ (Confetti)
+        // ========================
+        function celebrate() {
+            const duration = 4000;
+            const animationEnd = Date.now() + duration;
+            const confettiCanvas = document.getElementById('confettiCanvas');
+            const confettiCtx = confettiCanvas.getContext('2d');
+            
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+
+            const confettiColors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff69b4'];
+            const confettiPieces = [];
+
+            // បង្កើតកាំជ្រួច
+            for (let i = 0; i < 150; i++) {
+                confettiPieces.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * 150 + 10,
+                    color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+                    tilt: Math.floor(Math.random() * 10) - 10,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.05,
+                    tiltAngle: 0
+                });
+            }
+
+            function drawConfetti() {
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+                confettiPieces.forEach((piece, index) => {
+                    piece.tiltAngle += piece.tiltAngleIncremental;
+                    piece.y += (Math.cos(piece.d) + 3 + piece.r / 2) / 2;
+                    piece.x += Math.sin(piece.d);
+                    piece.tilt = Math.sin(piece.tiltAngle - index / 3) * 15;
+
+                    confettiCtx.beginPath();
+                    confettiCtx.lineWidth = piece.r / 2;
+                    confettiCtx.strokeStyle = piece.color;
+                    confettiCtx.moveTo(piece.x + piece.tilt + piece.r / 4, piece.y);
+                    confettiCtx.lineTo(piece.x + piece.tilt, piece.y + piece.tilt + piece.r / 4);
+                    confettiCtx.stroke();
+
+                    // Reset ប្រសិនបើធ្លាក់ចេញ
+                    if (piece.y > confettiCanvas.height) {
+                        piece.y = -10;
+                        piece.x = Math.random() * confettiCanvas.width;
+                    }
+                });
+
+                if (Date.now() < animationEnd) {
+                    requestAnimationFrame(drawConfetti);
+                } else {
+                    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                }
+            }
+
+            drawConfetti();
+        }
+
+        // ========================
+        // បង្កើតផ្កាយ
+        // ========================
+        function createStars() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 2 + 's';
+                    star.style.width = star.style.height = (Math.random() * 15 + 10) + 'px';
+                    document.body.appendChild(star);
+                    
+                    setTimeout(() => star.remove(), 3000);
+                }, i * 100);
+            }
+        }
+
+        // Responsive Canvas
+        window.addEventListener('resize', () => {
+            const confettiCanvas = document.getElementById('confettiCanvas');
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
