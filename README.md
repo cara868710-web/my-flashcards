@@ -1,34 +1,26 @@
-# 🚀 កម្រងគម្រោងបច្ចេកវិទ្យារបស់ខ្ញុំ (My Technology Portfolio)
+# 🏢 QC & Technology Control Center
 
-ស្វាគមន៍មកកាន់ Repository របស់ខ្ញុំ! ទីនេះគឺជាកន្លែងផ្ទុកស្នាដៃដែលខ្ញុំបានបង្កើតឡើង។
-
----
-
-## 1. 📊 កម្មវិធីបង្កើត PPT ស្វ័យប្រវត្ត (PPT Automation)
-គម្រោងនេះប្រើប្រាស់ភាសា **Python** ដើម្បីបង្កើតស្លាយ PowerPoint សម្រាប់ការបណ្ដុះបណ្ដាលបុគ្គលិក QC។
-
-*   **បច្ចេកវិទ្យា:** Python (python-pptx)
-*   **មុខងារ:** បង្កើតមេរៀនពីរភាសា (ចិន-ខ្មែរ) និងតារាងហាត់សរសេរអក្សរចិន។
-*   **កូដមេ:** [lesson_generator.py](./lesson_generator.py)
+មជ្ឈមណ្ឌលផ្ទុកកម្មវិធីសម្រាប់សម្រួលការងារផ្នែក QC និងការបណ្តុះបណ្តាល។
 
 ---
 
-## 2. 📚 កម្មវិធីបណ្ណពាក្យរំលឹកមេរៀន (Flashcards)
-វេបសាយតូចមួយសម្រាប់រៀនពាក្យបច្ចេកទេសក្នុងរោងចក្រ ងាយស្រួលប្រើលើទូរស័ព្ទដៃ។
+### 🚀 កម្មវិធីសម្រាប់ប្រើប្រាស់ (Live Tools)
+| កម្មវិធី | ស្ថានភាព | តំណភ្ជាប់ |
+| :--- | :--- | :--- |
+| **📚 Flashcard (រៀនពាក្យ)** | ![Flashcards](https://img.shields.io/badge/Status-Online-brightgreen) | [👉 បើករៀននៅទីនេះ](https://cara868710-web.github.io/my-flashcards/) |
+| **🎡 Lucky Wheel (កងសំណាង)** | ![Wheel](https://img.shields.io/badge/Status-Online-brightgreen) | [👉 បើកបង្វិលនៅទីនេះ](https://cara868710-web.github.io/my-flashcards/lucky-wheel.html) |
 
-*   **បច្ចេកវិទ្យ:** HTML, CSS, JavaScript
-*   **មុខងារ:** Flip card, Shuffle, Mobile support.
-*   **សាកល្បងប្រើប្រាស់:** [👉 ចុចទីនេះដើម្បីរៀន](https://cara868710-web.github.io/my-flashcards/)
+---
+
+### 🐍 ប្រព័ន្ធផលិតឯកសារ PowerPoint (Python Auto-Generator)
+គម្រោងនេះនឹងផលិតស្លាយ PowerPoint ដោយស្វ័យប្រវត្តិតាមរយៈកូដ Python។
+
+*   **ស្ថានភាពរត់ចុងក្រោយ:** ![Generate PowerPoint](https://github.com/cara868710-web/my-flashcards/actions/workflows/generate_ppt.yml/badge.svg)
+*   **កន្លែងទាញយក PPT:** [📂 ចុចទីនេះដើម្បីទៅយក File PPT](https://github.com/cara868710-web/my-flashcards/actions)
+*   **ឯកសារកូដ:** [lesson_generator.py](./lesson_generator.py)
 
 ---
 
-### 🛠️ ទំនាក់ទំនង
-**រៀបចំដោយ:** cara868710-web
-**គោលបំណង:** រៀនសូត្រ និងសម្រួលការងារបច្ចេកទេស
-
----
-## 3. 🎡 កងសំណាង (Lucky Wheel)
-កម្មវិធីកម្សាន្តសម្រាប់ចាប់រង្វាន់ ឬបែងចែកវេន QC តាមរយៈរង្វង់សំណាង។
-
-*   **បច្ចេកវិទ្យា:** HTML, CSS, JavaScript (Canvas API)
-*   **សាកល្បងប្រើប្រាស់:** [👉 ចុចទីនេះដើម្បីបង្វិល](https://cara868710-web.github.io/my-flashcards/lucky-wheel.html)
+### 🛠️ របៀប Update ទិន្នន័យ (ងាយស្រួលបំផុត)
+1. **ចង់ថែមពាក្យក្នុង Flashcard:** ចូលទៅ Edit file `index.html` ត្រង់ផ្នែក `const vocabList`។
+2. **ចង់ថែមមេរៀនក្នុង PPT:** ចូលទៅ Edit file `lesson_generator.py` ត្រង់ផ្នែក `vocab_data`។
