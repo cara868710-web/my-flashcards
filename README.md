@@ -25,6 +25,4 @@
 1. **ចង់ថែមពាក្យក្នុង Flashcard:** ចូលទៅ Edit file `index.html` ត្រង់ផ្នែក `const vocabList`។
 2. **ចង់ថែមមេរៀនក្នុង PPT:** ចូលទៅ Edit file `lesson_generator.py` ត្រង់ផ្នែក `vocab_data`។
 
-| កម្មវិធី | ស្ថានភាព | តំណភ្ជាប់ |
-| :--- | :--- | :--- |
-| **✍️ QC Quiz (តេស្តសមត្ថភាព)** | ![Quiz](https://img.shields.io/badge/Status-Exam--Online-orange) | [👉 ចុចប្រឡងនៅទីនេះ](https://cara868710-web.github.io/my-flashcards/quiz-app.html) |
+| ✍️ QC Quiz (តេស្តសមត្ថភាព) | ![Quiz](https://img.shields.io/badge/Status-Exam--Online-orange) | [👉 ចុចប្រឡងនៅទីនេះ](https://cara868710-web.github.io/my-flashcards/quiz-app.html) |
