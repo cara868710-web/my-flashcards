@@ -3,107 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QC Skills Test - ប្រឡងវាស់សមត្ថភាព</title>
+    <title>QC Quiz - តេស្តសមត្ថភាព</title>
     <style>
-        /* ==================== Styles & Design ==================== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Microsoft YaHei', 'Khmer OS Battambang', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0; padding: 20px;
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
-            background: white; border-radius: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 100%; max-width: 550px; padding: 40px; text-align: center;
-            position: relative; overflow: hidden;
-            animation: slideIn 0.5s ease-out;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        h1 {
+            color: #0051a2;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
 
         .progress-bar {
-            width: 100%; height: 8px; background-color: #e8e8e8; border-radius: 10px;
-            margin: 20px 0; overflow: hidden;
+            width: 100%;
+            height: 6px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
         }
 
         .progress-fill {
-            height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            width: 0%; transition: width 0.4s ease;
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .score-badge {
+            background: #e3f2fd;
+            color: #0051a2;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .question-box {
+            margin-bottom: 30px;
+        }
+
+        .chinese-word-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0;
         }
 
         .chinese-word {
-            font-size: 72px; font-weight: bold; color: #333; margin: 20px 0;
-            text-shadow: 3px 3px 0px rgba(102, 126, 234, 0.2);
-            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-size: 50px;
+            font-weight: bold;
+            color: #333;
+            text-shadow: 2px 2px 0px #eee; 
         }
 
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        /* ប៊ូតុងអានសម្លេង */
+        .speak-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .speak-btn:active {
+            transform: scale(0.9);
+            background: #0056b3;
+        }
+
+        .speak-btn.playing {
+            background: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        .question-text {
+            color: #666;
+            font-size: 16px;
+        }
 
         .options-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
-        button {
-            background: white; border: 3px solid #f0f0f0; border-radius: 18px;
-            padding: 15px 10px; font-family: 'Khmer OS Battambang';
-            font-size: 16px; font-weight: bold; color: #444; cursor: pointer;
-            transition: all 0.2s; min-height: 80px; display: flex; align-items: center; justify-content: center;
+        button.option-btn {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 15px 10px;
+            font-family: 'Khmer OS Battambang';
+            font-size: 16px;
+            font-weight: bold;
+            color: #444;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        button:hover { border-color: #667eea; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        
-        button.correct { background: #2ecc71; color: white; border-color: #27ae60; }
-        button.wrong { background: #e74c3c; color: white; border-color: #c0392b; animation: shake 0.5s; }
-
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
-
-        .result-screen { display: none; }
-        .final-score { font-size: 72px; font-weight: bold; color: #667eea; margin: 15px 0; }
-        
-        .btn-restart { 
-            background: #667eea; color: white; border: none; width: 100%; height: 55px; 
-            border-radius: 15px; font-size: 18px; cursor: pointer; margin-top: 20px;
+        button.option-btn:hover {
+            border-color: #0051a2;
+            background-color: #f8fbff;
+            transform: translateY(-2px);
         }
 
-        .sound-btn { position: absolute; top: 15px; left: 15px; background: none; border: none; font-size: 20px; cursor: pointer; opacity: 0.5; width: 40px; height: 40px; }
-
-        @media (max-width: 500px) {
-            .options-grid { grid-template-columns: 1fr; }
-            .chinese-word { font-size: 55px; }
+        button.option-btn:active {
+            transform: scale(0.95);
         }
+
+        button.correct {
+            background-color: #2ecc71;
+            color: white;
+            border-color: #2ecc71;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4);
+        }
+
+        button.wrong {
+            background-color: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .result-screen {
+            display: none;
+        }
+
+        .final-score {
+            font-size: 60px;
+            font-weight: bold;
+            color: #0051a2;
+            margin: 20px 0;
+        }
+
+        .feedback-text {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .restart-btn {
+            background: #0051a2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            height: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .restart-btn:hover {
+            background: #003d7a;
+        }
+
     </style>
 </head>
 <body>
 
     <div class="container">
-        <button class="sound-btn" onclick="toggleSound()" id="soundIcon">🔊</button>
-
-        <!-- Quiz Interface -->
+        <!-- ផ្នែកសំណួរ -->
         <div id="quiz-screen">
-            <h2 style="color: #667eea;">✍️ QC Quiz App</h2>
-            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-            <p style="color: #888; font-weight: bold;">សំណួរទី <span id="currentQNum">1</span> / <span id="totalQNum">10</span></p>
-            
-            <div class="chinese-word" id="displayWord">...</div>
-            <p style="color: #999;">ជ្រើសរើសអត្ថន័យដែលត្រឹមត្រូវ៖</p>
+            <h1>✍️ តេស្តសមត្ថភាព (QC Quiz)</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="score-badge">សំណួរទី <span id="currentQ">1</span> / <span id="totalQ">10</span></div>
 
-            <div class="options-grid" id="optionsBox"></div>
+            <div class="question-box">
+                <div class="question-text">ចុចស្តាប់ 🔊 ហើយជ្រើសរើសចម្លើយ</div>
+                <div class="chinese-word-container">
+                    <div class="chinese-word" id="chineseWord">...</div>
+                    <button class="speak-btn" onclick="speakText()" title="អានពាក្យនេះ">🔊</button>
+                </div>
+            </div>
+
+            <div class="options-grid" id="optionsContainer">
+                <!-- ជម្រើសនឹងលេចនៅទីនេះ -->
+            </div>
         </div>
 
-        <!-- Result Interface -->
+        <!-- ផ្នែកលទ្ធផល -->
         <div id="result-screen" class="result-screen">
-            <h1>🏆 ការប្រឡងបានបញ្ចប់</h1>
-            <div class="final-score" id="finalScoreText">0</div>
-            <p id="feedbackText" style="font-weight: bold; font-size: 20px; margin-bottom: 20px;"></p>
-            <button class="btn-restart" onclick="restartQuiz()">🔄 សាកល្បងម្ដងទៀត</button>
+            <h1>🎉 លទ្ធផលការប្រឡង</h1>
+            <div style="font-size: 80px; margin: 10px 0;">🏆</div>
+            <div class="final-score" id="finalScore">0</div>
+            <div class="feedback-text" id="finalFeedback">...</div>
+            <button class="restart-btn" onclick="startQuiz()">🔄 ប្រឡងម្តងទៀត</button>
         </div>
     </div>
 
     <script>
-        // ១. ឃ្លាំងទិន្នន័យ (៤៩ ពាក្យពេញលេញ)
+        // ១. ឃ្លាំងពាក្យ
         const database = [
             { cn: "工厂", km: "រោងចក្រ" }, { cn: "车间", km: "រោងជាង / អាគារ" }, { cn: "办公室", km: "ការិយាល័យ" },
             { cn: "班长", km: "ប្រធានក្រុម" }, { cn: "翻译", km: "អ្នកបកប្រែ" }, { cn: "注意安全", km: "ប្រយ័ត្នសុវត្ថិភាព" },
@@ -117,103 +256,142 @@
             { cn: "漏焊", km: "ភ្លេចផ្សារ" }, { cn: "针眼", km: "ភ្នែកម្ជុល" }, { cn: "凹陷", km: "កំពិត / ផត" },
             { cn: "焊道偏心", km: "ផ្សារវៀច" }, { cn: "电击伤", km: "ឆេះម៉ាស" }, { cn: "堆焊", km: "ផ្សារទូល" },
             { cn: "咬边", km: "ស៊ីសាច់បំពង់" }, { cn: "间隙", km: "ចន្លោះ / ហើប" }, { cn: "碰刮伤", km: "ប៉ះទង្គិច / កោស" },
-            { cn: "焊渣", km: "កំទេចផ្សារ" },
-            // ១២ ពាក្យបន្ថែមថ្មី
-            { cn: "起泡", km: "ពង / ចូលខ្យល់" }, { cn: "标纸不良", km: "តែមមិនល្អ" }, { cn: "修补痕", km: "ស្នាមជួសជុល / ស្នាមកែ" },
-            { cn: "杂质", km: "ធូលី / កំទេចកំទី" }, { cn: "脏污", km: "ប្រឡាក់" }, { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង" },
-            { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា" }, { cn: "雾面", km: "ស្រអាប់" }, { cn: "橘皮", km: "សំបកក្រូច" },
-            { cn: "针孔", km: "រន្ធម្ជុល" }, { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ" }, { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ" }
+            { cn: "焊渣", km: "កំទេចផ្សារ" }
         ];
 
-        let quizData = [];
-        let currentIndex = 0;
+        let questions = [];
+        let currentQuestionIndex = 0;
         let score = 0;
-        let soundOn = true;
-        const totalQs = 10;
+        const totalQuestions = 10;
+        let speechMsg = new SpeechSynthesisUtterance();
 
-        // ២. មុខងារបំពងសំឡេង (Sound Synth)
-        function playSfx(correct) {
-            if(!soundOn) return;
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain); gain.connect(ctx.destination);
-            osc.frequency.value = correct ? 600 : 200;
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            osc.start(); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-            osc.stop(ctx.currentTime + 0.2);
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const chineseWordEl = document.getElementById('chineseWord');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const currentQEl = document.getElementById('currentQ');
+        const totalQEl = document.getElementById('totalQ');
+        const progressBar = document.getElementById('progressBar');
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
-        function toggleSound() {
-            soundOn = !soundOn;
-            document.getElementById('soundIcon').innerText = soundOn ? '🔊' : '🔇';
+        // --- មុខងារអានសម្លេង ---
+        function speakText() {
+            const text = chineseWordEl.innerText;
+            const btn = document.querySelector('.speak-btn');
+            
+            // កំណត់ភាសាចិន (zh-CN)
+            speechMsg.text = text;
+            speechMsg.lang = 'zh-CN';
+            speechMsg.rate = 0.8; // អានមួយៗ
+            
+            // Effect
+            btn.classList.add('playing');
+            speechMsg.onend = function() {
+                btn.classList.remove('playing');
+            };
+
+            window.speechSynthesis.cancel(); // ឈប់អាលមួយសិន
+            window.speechSynthesis.speak(speechMsg);
         }
 
-        // ៣. Logic កម្មវិធី
-        function restartQuiz() {
-            score = 0; currentIndex = 0;
-            quizData = [...database].sort(() => Math.random() - 0.5).slice(0, totalQs);
-            document.getElementById('quiz-screen').style.display = 'block';
-            document.getElementById('result-screen').style.display = 'none';
+        function startQuiz() {
+            score = 0;
+            currentQuestionIndex = 0;
+            quizScreen.style.display = 'block';
+            resultScreen.style.display = 'none';
+            
+            const shuffledDB = shuffle([...database]);
+            questions = shuffledDB.slice(0, totalQuestions);
+            
+            totalQEl.innerText = totalQuestions;
             loadQuestion();
         }
 
         function loadQuestion() {
-            const q = quizData[currentIndex];
-            document.getElementById('displayWord').innerText = q.cn;
-            document.getElementById('currentQNum').innerText = currentIndex + 1;
-            document.getElementById('totalQNum').innerText = totalQs;
-            document.getElementById('progressFill').style.width = `${(currentIndex / totalQs) * 100}%`;
+            const currentData = questions[currentQuestionIndex];
+            
+            chineseWordEl.innerText = currentData.cn;
+            currentQEl.innerText = currentQuestionIndex + 1;
+            progressBar.style.width = `${((currentQuestionIndex) / totalQuestions) * 100}%`;
+            
+            // អានសម្លេងស្វ័យប្រវត្តិពេលបើកសំណួរ (Optional - បើមិនចង់ឱ្យរំខាន អាចលុបបន្ទាត់នេះ)
+            setTimeout(() => speakText(), 300);
 
-            // រើសចម្លើយបន្លំ ៣
-            let wrongOptions = database.filter(i => i.km !== q.km).sort(() => Math.random() - 0.5).slice(0, 3);
-            let options = [...wrongOptions, q].sort(() => Math.random() - 0.5);
+            let options = [currentData];
+            let distractors = database.filter(item => item.cn !== currentData.cn);
+            distractors = shuffle(distractors).slice(0, 3);
+            
+            options = options.concat(distractors);
+            options = shuffle(options);
 
-            const box = document.getElementById('optionsBox');
-            box.innerHTML = '';
+            optionsContainer.innerHTML = '';
             options.forEach(opt => {
                 const btn = document.createElement('button');
+                btn.classList.add('option-btn');
                 btn.innerText = opt.km;
-                btn.onclick = () => checkAnswer(btn, opt.km === q.km);
-                box.appendChild(btn);
+                btn.onclick = () => checkAnswer(btn, opt.km === currentData.km);
+                optionsContainer.appendChild(btn);
             });
         }
 
         function checkAnswer(btn, isCorrect) {
-            const btns = document.querySelectorAll('#optionsBox button');
-            btns.forEach(b => b.disabled = true);
+            const allBtns = optionsContainer.querySelectorAll('button');
+            allBtns.forEach(b => b.disabled = true);
 
-            if(isCorrect) {
+            if (isCorrect) {
                 btn.classList.add('correct');
                 score++;
-                playSfx(true);
             } else {
                 btn.classList.add('wrong');
-                playSfx(false);
-                btns.forEach(b => { if(b.innerText === quizData[currentIndex].km) b.classList.add('correct'); });
+                allBtns.forEach(b => {
+                    if (b.innerText === questions[currentQuestionIndex].km) {
+                        b.classList.add('correct');
+                    }
+                });
             }
 
             setTimeout(() => {
-                currentIndex++;
-                if(currentIndex < totalQs) loadQuestion();
-                else showFinalResult();
-            }, 1500);
+                currentQuestionIndex++;
+                if (currentQuestionIndex < totalQuestions) {
+                    loadQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1200);
         }
 
-        function showFinalResult() {
-            document.getElementById('quiz-screen').style.display = 'none';
-            document.getElementById('result-screen').style.display = 'block';
-            document.getElementById('finalScoreText').innerText = `${score} / ${totalQs}`;
+        function showResult() {
+            quizScreen.style.display = 'none';
+            resultScreen.style.display = 'block';
             
-            const feedback = document.getElementById('feedbackText');
-            if(score === 10) feedback.innerText = "ល្អឥតខ្ចោះ! អ្នកគឺជា QC កំពូលអង់អាច! 🌟";
-            else if(score >= 7) feedback.innerText = "ធ្វើបានល្អណាស់! បន្តការខំប្រឹងទៀត! 👍";
-            else feedback.innerText = "ខិតខំរៀនបន្ថែមទៀត! ស៊ូៗ! 💪";
+            document.getElementById('finalScore').innerText = `${score} / ${totalQuestions}`;
+            
+            const feedbackEl = document.getElementById('finalFeedback');
+            if (score === 10) {
+                feedbackEl.innerText = "ល្អឥតខ្ចោះ! អ្នកគឺជាកំពូល QC! 🌟";
+                feedbackEl.style.color = "#27ae60";
+            } else if (score >= 8) {
+                feedbackEl.innerText = "ធ្វើបានល្អណាស់! ស៊ូៗបន្តិចទៀត! 👍";
+                feedbackEl.style.color = "#2980b9";
+            } else if (score >= 5) {
+                feedbackEl.innerText = "ល្អបង្គួរ! ត្រូវរៀនពាក្យបន្ថែមទៀត។ 📚";
+                feedbackEl.style.color = "#f39c12";
+            } else {
+                feedbackEl.innerText = "កុំបោះបង់! ទៅមើល Flashcard ឡើងវិញ។ 💪";
+                feedbackEl.style.color = "#c0392b";
+            }
         }
 
-        // ចាប់ផ្ដើមដំបូង
-        restartQuiz();
-    </script>
+        // ចាប់ផ្តើម
+        startQuiz();
 
+    </script>
 </body>
 </html>
