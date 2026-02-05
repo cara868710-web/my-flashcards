@@ -3,123 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QC Quiz Dashboard - ប្រព័ន្ធស្រង់ពិន្ទុអូតូ</title>
+    <title>QC Smart Test - ប្រព័ន្ធស្រង់ពិន្ទុឌីជីថល</title>
     <style>
-        /* រចនាប័ទ្មរក្សាដូចមុន ប៉ុន្តែបន្ថែមការតុបតែងបន្តិចបន្តួច */
-        body { font-family: 'Khmer OS Battambang', sans-serif; background: #667eea; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .container { background: white; border-radius: 20px; padding: 30px; width: 100%; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .btn-main { background: #0051a2; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 18px; }
-        .input-group input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #ddd; border-radius: 10px; font-size: 18px; }
-        #quiz-screen, #result-screen { display: none; }
-        .chinese-word { font-size: 60px; font-weight: bold; margin: 20px 0; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .option-btn { padding: 20px; border: 1px solid #ddd; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .correct { background: #2ecc71 !important; color: white; }
-        .wrong { background: #e74c3c !important; color: white; }
+        /* ==================== ឌីហ្សាញបែប Premium ==================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', 'Khmer OS Battambang', sans-serif;
+            background: linear-gradient(135deg, #0052cc 0%, #667eea 100%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .container {
+            background: white; border-radius: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%; max-width: 500px; padding: 40px; text-align: center; position: relative;
+        }
+        h1 { color: #0052cc; margin-bottom: 20px; font-size: 26px; }
+        input {
+            width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 15px;
+            font-size: 18px; font-family: 'Khmer OS Battambang'; margin-bottom: 20px; outline: none;
+        }
+        input:focus { border-color: #0052cc; }
+        .btn-start, .btn-restart {
+            background: #0052cc; color: white; border: none; padding: 15px 30px;
+            border-radius: 15px; font-size: 18px; cursor: pointer; font-weight: bold; width: 100%;
+        }
+        /* Question Styles */
+        #quiz-box, #result-box { display: none; }
+        .chinese-word { font-size: 70px; font-weight: bold; color: #333; margin: 20px 0; }
+        .speak-btn {
+            background: #eef2f7; border: none; width: 50px; height: 50px; border-radius: 50%;
+            cursor: pointer; font-size: 20px; margin-bottom: 20px; transition: 0.3s;
+        }
+        .speak-btn:hover { background: #d0dae5; }
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .option-btn {
+            padding: 18px; border: 2px solid #eee; border-radius: 15px; background: white;
+            cursor: pointer; font-family: 'Khmer OS Battambang'; font-weight: bold; font-size: 16px;
+        }
+        .correct { background: #2ecc71 !important; color: white; border-color: #27ae60; }
+        .wrong { background: #e74c3c !important; color: white; border-color: #c0392b; }
+        .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #2ecc71; width: 0%; transition: 0.3s; }
     </style>
 </head>
 <body>
 
-    <!-- ១. ផ្ទាំងចុះឈ្មោះ -->
-    <div id="login-screen" class="container">
-        <h1>📊 QC Competency Test</h1>
-        <div class="input-group">
-            <input type="text" id="userName" placeholder="បញ្ចូលឈ្មោះបុគ្គលិក / 姓名">
+    <div class="container">
+        <!-- ១. ផ្ទាំងចុះឈ្មោះ (Login) -->
+        <div id="login-box">
+            <h1>📋 ស្វាគមន៍បេក្ខជន</h1>
+            <p style="margin-bottom: 20px; color: #666;">សូមបញ្ចូលឈ្មោះដើម្បីចាប់ផ្ដើមតេស្ត</p>
+            <input type="text" id="staffName" placeholder="ឈ្មោះបុគ្គលិក / 姓名" autofocus>
+            <button class="btn-start" onclick="startTest()">ចាប់ផ្ដើមប្រឡង ➔</button>
         </div>
-        <button class="btn-main" onclick="startTest()">ចាប់ផ្ដើមតេស្ត ➔</button>
-    </div>
 
-    <!-- ២. ផ្ទាំងសំណួរ -->
-    <div id="quiz-screen" class="container">
-        <p id="staffDisplayName"></p>
-        <div class="chinese-word" id="displayWord">...</div>
-        <div class="options-grid" id="optionsBox"></div>
-    </div>
+        <!-- ២. ផ្ទាំងសំណួរ (Quiz) -->
+        <div id="quiz-box">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <p style="font-weight: bold; color: #888;">សំណួរទី <span id="qNum">1</span> / 10</p>
+            <div class="chinese-word" id="wordDisplay">...</div>
+            <button class="speak-btn" onclick="playVoice()">🔊</button>
+            <div class="options-grid" id="optionsGrid"></div>
+        </div>
 
-    <!-- ៣. ផ្ទាំងលទ្ធផល -->
-    <div id="result-screen" class="container">
-        <h2>🏆 តេស្តរួចរាល់!</h2>
-        <h1 id="finalScore">0 / 10</h1>
-        <p style="color: #666;">លទ្ធផលរបស់អ្នកត្រូវបានបាញ់ចូល Google Sheets រួចរាល់។</p>
-        <button class="btn-main" onclick="location.reload()">🔄 ធ្វើម្ដងទៀត</button>
+        <!-- ៣. ផ្ទាំងលទ្ធផល (Result) -->
+        <div id="result-box">
+            <h1 style="font-size: 50px;">🏆</h1>
+            <h2>លទ្ធផលរបស់អ្នក</h2>
+            <div id="finalScoreText" style="font-size: 60px; font-weight: bold; color: #0052cc; margin: 20px 0;">0 / 10</div>
+            <p id="feedbackText" style="margin-bottom: 30px; font-weight: bold; color: #555;"></p>
+            <p id="sendingLabel" style="color: #2ecc71; font-weight: bold;">📊 បញ្ជូនពិន្ទុចូល Sheet រួចរាល់!</p>
+            <button class="btn-restart" onclick="location.reload()">🔄 ប្រឡងម្ដងទៀត</button>
+        </div>
     </div>
 
     <script>
+        // --- ទិន្នន័យ (៤៩ ពាក្យ) ---
         const database = [
-            { cn: "工厂", km: "រោងចក្រ" }, { cn: "车间", km: "រោងជាង" }, { cn: "合格", km: "ជាប់" }, { cn: "不合格", km: "ធ្លាក់" },
-            { cn: "焊渣", km: "កំទេចផ្សារ" }, { cn: "划痕", km: "ស្នាមឆ្កូត" } // ដាក់ឱ្យគ្រប់ ៤៩ ពាក្យរបស់អ្នក
+            { cn: "工厂", km: "រោងចក្រ" }, { cn: "车间", km: "រោងជាង / អាគារ" }, { cn: "办公室", km: "ការិយាល័យ" },
+            { cn: "班长", km: "ប្រធានក្រុម" }, { cn: "翻译", km: "អ្នកបកប្រែ" }, { cn: "注意安全", km: "ប្រយ័ត្នសុវត្ថិភាព" },
+            { cn: "上班", km: "ចូលធ្វើការ" }, { cn: "下班", km: "ចេញពីធ្វើការ" }, { cn: "请假", km: "សុំច្បាប់" },
+            { cn: "车架", km: "តួកង់" }, { cn: "前叉", km: "ឆ្ពោះមុខ (Fork)" }, { cn: "车把", km: "ដៃកង់" },
+            { cn: "车圈", km: "ខ្នងកង់" }, { cn: "外胎", km: "សំបកកង់" }, { cn: "脚踏", km: "ឈ្នាន់" },
+            { cn: "链条", km: "ច្រវាក់" }, { cn: "座垫", km: "កែប" }, { cn: "刹车", km: "ហ្វ្រាំង" },
+            { cn: "测量值", km: "តម្លៃវាស់ជាក់ស្តែង" }, { cn: "标准值", km: "តម្លៃស្តង់ដា" }, { cn: "上限", km: "ដែនកំណត់ លើ" },
+            { cn: "下限", km: "ដែនកំណត់ ក្រោម" }, { cn: "趋势图", km: "ក្រាបនិន្នាការ" }, { cn: "合格", km: "ជាប់ (OK)" },
+            { cn: "不合格", km: "ធ្លាក់ (NG)" }, { cn: "开裂", km: "ប្រេះ (Crack)" }, { cn: "焊破", km: "ផ្សាធ្លុះ" },
+            { cn: "漏焊", km: "ភ្លេចផ្សារ" }, { cn: "针眼", km: "ភ្នែកម្ជុល" }, { cn: "凹陷", km: "កំពិត / ផត" },
+            { cn: "焊道偏心", km: "ផ្សារវៀច" }, { cn: "电击伤", km: "ឆេះម៉ាស" }, { cn: "堆焊", km: "ផ្សារទូល" },
+            { cn: "咬边", km: "ស៊ីសាច់បំពង់" }, { cn: "间隙", km: "ចន្លោះ / ហើប" }, { cn: "碰刮伤", km: "ប៉ះទង្គិច / កោស" },
+            { cn: "焊渣", km: "កំទេចផ្សារ" },
+            { cn: "起泡", km: "ពង / ចូលខ្យល់" }, { cn: "标纸不良", km: "តែមមិនល្អ" }, { cn: "修补痕", km: "ស្នាមជួសជុល" },
+            { cn: "杂质", km: "ធូលី / កំទេចកំទី" }, { cn: "脏污", km: "ប្រឡាក់" }, { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង" },
+            { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា" }, { cn: "雾面", km: "ស្រអាប់" }, { cn: "橘皮", km: "សំបកក្រូច" },
+            { cn: "针孔", km: "រន្ធម្ជុល" }, { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ" }, { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ" }
         ];
 
+        let staffName = "";
         let questions = [];
         let score = 0;
-        let currentIndex = 0;
-        let userName = "";
+        let index = 0;
 
-        // --- មុខងារបាញ់ទិន្នន័យទៅ Google Sheets ---
-        function sendResultToGoogle(staffName, finalScore) {
-            // ប្ដូរ YOUR_FORM_ID ទៅជា ID របស់ Google Form អ្នក
-            const formURL = "https://docs.google.com/forms/u/0/d/e/YOUR_FORM_ID_HERE/formResponse";
+        // ១. មុខងារបាញ់ទិន្នន័យ (Google Sheet Automation)
+        function sendScoreToGoogle(name, finalScore) {
+            const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSeDTCZHEGnvsvvkzUW30hvCE1A2O88kVUPHNzAqsAyngD0PTw/formResponse";
             const formData = new FormData();
+            
+            // ប្ដូរតាមលេខ Entry ID ក្នុងលីងរបស់អ្នក
+            formData.append("entry.574845234", name);       // សម្រាប់ ឈ្មោះ
+            formData.append("entry.499524849", finalScore); // សម្រាប់ ពិន្ទុ
 
-            // ប្ដូរ entry.xxxx ឱ្យត្រូវនឹង Form របស់អ្នក
-            formData.append("entry.12345678", staffName); // Entry ID សម្រាប់ឈ្មោះ
-            formData.append("entry.87654321", finalScore); // Entry ID សម្រាប់ពិន្ទុ
-
-            fetch(formURL, {
-                method: "POST",
-                mode: "no-cors",
-                body: formData
-            });
+            fetch(formURL, { method: "POST", mode: "no-cors", body: formData })
+            .catch(error => console.log("Sending issue: ", error));
         }
 
         function startTest() {
-            userName = document.getElementById('userName').value.trim();
-            if(!userName) return alert("សូមបញ្ចូលឈ្មោះ!");
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('quiz-screen').style.display = 'block';
-            document.getElementById('staffDisplayName').innerText = "បុគ្គលិក៖ " + userName;
-            
-            questions = database.sort(() => 0.5 - Math.random()).slice(0, 10);
-            loadQuestion();
+            staffName = document.getElementById('staffName').value.trim();
+            if(!staffName) return alert("សូមបញ្ចូលឈ្មោះសិន! / 请先输入姓名");
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('quiz-box').style.display = 'block';
+            questions = [...database].sort(() => 0.5 - Math.random()).slice(0, 10);
+            loadNext();
         }
 
-        function loadQuestion() {
-            const q = questions[currentIndex];
-            document.getElementById('displayWord').innerText = q.cn;
+        function loadNext() {
+            const q = questions[index];
+            document.getElementById('wordDisplay').innerText = q.cn;
+            document.getElementById('qNum').innerText = index + 1;
+            document.getElementById('progressFill').style.width = (index / 10 * 100) + "%";
             
+            setTimeout(playVoice, 500); // អានអូតូ
+
             let options = database.filter(x => x.km !== q.km).sort(() => 0.5 - Math.random()).slice(0, 3);
             options.push(q);
             options.sort(() => 0.5 - Math.random());
 
-            const box = document.getElementById('optionsBox');
-            box.innerHTML = '';
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = opt.km;
                 btn.onclick = () => {
-                    const btns = box.querySelectorAll('button');
-                    btns.forEach(b => b.disabled = true);
+                    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
                     if(opt.km === q.km) { btn.classList.add('correct'); score++; }
                     else { btn.classList.add('wrong'); }
                     
                     setTimeout(() => {
-                        currentIndex++;
-                        if(currentIndex < 10) loadQuestion();
-                        else finishTest();
-                    }, 1000);
+                        index++;
+                        if(index < 10) loadNext();
+                        else showResult();
+                    }, 1200);
                 };
-                box.appendChild(btn);
+                grid.appendChild(btn);
             });
         }
 
-        function finishTest() {
-            document.getElementById('quiz-screen').style.display = 'none';
-            document.getElementById('result-screen').style.display = 'block';
-            document.getElementById('finalScore').innerText = score + " / 10";
+        function playVoice() {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(document.getElementById('wordDisplay').innerText);
+            msg.lang = 'zh-CN';
+            msg.rate = 0.8;
+            window.speechSynthesis.speak(msg);
+        }
+
+        function showResult() {
+            document.getElementById('quiz-box').style.display = 'none';
+            document.getElementById('result-box').style.display = 'block';
+            document.getElementById('finalScoreText').innerText = score + " / 10";
             
-            // ហៅមុខងារបាញ់ទិន្នន័យ
-            sendResultToGoogle(userName, score);
+            const feedback = document.getElementById('feedbackText');
+            if(score === 10) feedback.innerText = "អស្ចារ្យ! អ្នកគឺជា QC កំពូល! 🌟";
+            else if(score >= 7) feedback.innerText = "ល្អណាស់! ស៊ូៗ! 👍";
+            else feedback.innerText = "ខំប្រឹងរៀនបន្ថែមទៀតណា! 💪";
+
+            // បញ្ជូនលទ្ធផលទៅ Google Sheet ភ្លាមៗ
+            sendScoreToGoogle(staffName, score);
         }
     </script>
 </body>
