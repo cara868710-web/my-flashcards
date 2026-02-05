@@ -3,178 +3,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QC Skills Test - Stable Version</title>
+    <title>QC Skills Test - Premium Edition</title>
     <style>
-        /* Design Premium & Stable */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* ===== RESET & BASE ===== */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        
         body {
-            font-family: 'Microsoft YaHei', 'Khmer OS Battambang', sans-serif;
-            background: linear-gradient(135deg, #5067d3 0%, #3a4bb0 100%);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'Khmer OS Battambang', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: bgMove 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* ===== CONTAINER ===== */
         .container {
-            background: white; border-radius: 25px; box-shadow: 0 15px 45px rgba(0,0,0,0.3);
-            width: 100%; max-width: 500px; padding: 30px; text-align: center;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 520px;
+            padding: 40px 35px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: slideIn 0.5s ease-out;
         }
-        h2 { color: #5067d3; margin-bottom: 15px; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h2 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* ===== INPUTS ===== */
         input {
-            width: 100%; padding: 16px; border: 2px solid #ddd; border-radius: 15px;
-            font-size: 18px; font-family: 'Khmer OS Battambang'; margin-bottom: 20px; outline: none;
+            width: 100%;
+            padding: 18px 20px;
+            border: 3px solid #f0f0f0;
+            border-radius: 18px;
+            font-size: 17px;
+            font-family: 'Khmer OS Battambang', sans-serif;
+            margin-bottom: 20px;
+            outline: none;
+            transition: all 0.3s;
+            background: #fafafa;
         }
-        input:focus { border-color: #5067d3; }
+
+        input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        /* ===== BUTTONS ===== */
         .btn-action {
-            background: #5067d3; color: white; border: none; padding: 16px;
-            border-radius: 15px; font-size: 18px; cursor: pointer; font-weight: bold; width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 18px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: 700;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
         }
-        #quiz-box, #result-box { display: none; }
-        .staff-tag { font-weight: bold; color: #777; margin-bottom: 10px; font-size: 14px; }
-        .chinese-word { font-size: 68px; font-weight: bold; color: #222; margin: 15px 0; }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        /* ===== SCREENS ===== */
+        #quiz-box, #result-box { 
+            display: none; 
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== QUIZ INTERFACE ===== */
+        .staff-tag {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.6);
+        }
+
+        .question-counter {
+            font-weight: 700;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .question-counter span {
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        /* Chinese Word Display */
+        .chinese-word {
+            font-size: 72px;
+            font-weight: 900;
+            color: #333;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 2px;
+            animation: wordPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes wordPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Speaker Button */
         .speak-btn {
-            background: #f0f3ff; border: none; width: 55px; height: 55px; border-radius: 50%;
-            cursor: pointer; font-size: 24px; margin-bottom: 15px; display: inline-flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 26px;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(252, 182, 159, 0.4);
         }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .speak-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(252, 182, 159, 0.6);
+        }
+
+        .speak-btn:active {
+            transform: scale(0.95);
+        }
+
+        .speak-btn.playing {
+            animation: pulse 0.8s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
         .option-btn {
-            padding: 15px 5px; border: 2px solid #f0f0f0; border-radius: 15px; background: white;
-            cursor: pointer; font-family: 'Khmer OS Battambang'; font-weight: bold; font-size: 16px; min-height: 80px;
-            transition: 0.2s;
+            padding: 18px 10px;
+            border: 3px solid #f5f5f5;
+            border-radius: 18px;
+            background: white;
+            cursor: pointer;
+            font-family: 'Khmer OS Battambang', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            min-height: 85px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .correct { background: #2ecc71 !important; color: white; border-color: #2ecc71; }
-        .wrong { background: #e74c3c !important; color: white; border-color: #e74c3c; animation: shake 0.4s; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .progress-bar { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #2ecc71; width: 0%; transition: width 0.3s linear; }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .correct {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+            color: white !important;
+            border-color: #11998e !important;
+            animation: correctAnim 0.5s ease;
+        }
+
+        @keyframes correctAnim {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .wrong {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%) !important;
+            color: white !important;
+            border-color: #eb3349 !important;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+
+        /* ===== RESULT SCREEN ===== */
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 15px;
+            animation: iconBounce 1s ease;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .final-score {
+            font-size: 70px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+            text-shadow: 2px 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .result-message {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 15px 0;
+            padding: 12px 20px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .pass {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            color: #1e7e34;
+        }
+
+        .fail {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #bd2130;
+        }
+
+        .status-message {
+            color: #27ae60;
+            font-weight: 600;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .container { padding: 30px 25px; }
+            .chinese-word { font-size: 58px; }
+            .final-score { font-size: 60px; }
+            h2 { font-size: 24px; }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Screen 1: Registration -->
+        <!-- ===== SCREEN 1: REGISTRATION ===== -->
         <div id="login-box">
-            <h2>📊 QC Skill Test</h2>
-            <p style="color: #666; margin-bottom: 20px;">សូមបញ្ចូលឈ្មោះដើម្បីចាប់ផ្ដើមតេស្ត</p>
-            <input type="text" id="staffName" placeholder="ឈ្មោះបុគ្គលិក / 姓名">
-            <button class="btn-action" onclick="beginQuiz()">ចាប់ផ្ដើមប្រឡង</button>
+            <h2>📊 QC Skills Test</h2>
+            <p class="subtitle">សូមបញ្ចូលឈ្មោះដើម្បីចាប់ផ្ដើមតេស្ត<br>请输入姓名开始测试</p>
+            <input 
+                type="text" 
+                id="staffName" 
+                placeholder="ឈ្ម���ះបុគ្គលិក / 员工姓名"
+                autocomplete="off"
+                maxlength="50"
+            >
+            <button class="btn-action" onclick="beginQuiz()">
+                🚀 ចាប់ផ្ដើមប្រឡង
+            </button>
         </div>
 
-        <!-- Screen 2: Quiz -->
+        <!-- ===== SCREEN 2: QUIZ ===== -->
         <div id="quiz-box">
-            <div class="staff-tag" id="staffTag"></div>
-            <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
-            <p style="font-weight: bold; color: #aaa;">សំណួរ <span id="qIdx">1</span>/10</p>
-            <div class="chinese-word" id="cnDisplay">...</div>
-            <button class="speak-btn" onclick="playVoiceManual()">🔊</button>
+            <div class="staff-tag" id="staffTag">👤 បេក្ខជន</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="pFill"></div>
+            </div>
+            <p class="question-counter">
+                សំណួរ <span id="qIdx">1</span>/10
+            </p>
+            <div class="chinese-word" id="cnDisplay">加载中...</div>
+            <button class="speak-btn" id="speakBtn" onclick="playVoiceManual()">🔊</button>
             <div class="options-grid" id="optGrid"></div>
         </div>
 
-        <!-- Screen 3: Result -->
+        <!-- ===== SCREEN 3: RESULT ===== -->
         <div id="result-box">
-            <h1 style="font-size: 50px;">🏆</h1>
-            <h2 id="finalUser"></h2>
-            <div id="finalScore" style="font-size: 55px; font-weight: bold; color: #5067d3; margin: 15px 0;"></div>
-            <p id="sendingStatus" style="color: #27ae60; font-weight: bold;">✅ រក្សាទុកពិន្ទុរួចរាល់</p>
-            <button class="btn-action" style="margin-top: 20px;" onclick="location.reload()">🔄 ប្រឡងម្ដងទៀត</button>
+            <div class="result-icon" id="resultIcon">🏆</div>
+            <h2 id="finalUser" style="margin-bottom: 10px;">បេក្ខជន</h2>
+            <div class="final-score" id="finalScore">0/10</div>
+            <div class="result-message" id="resultMsg">-</div>
+            <p class="status-message">
+                <span id="sendingStatus">✅ រក្សាទុកពិន្ទុរួចរាល់</span>
+            </p>
+            <button class="btn-action" onclick="location.reload()" style="margin-top: 20px;">
+                🔄 ធ្វើតេស្តម្ដងទៀត
+            </button>
         </div>
     </div>
 
+    <!-- ResponsiveVoice for HIGH QUALITY Chinese TTS -->
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=jQZ5controlled"></script>
+
     <script>
-        // Database - 49 words
+        // ===== DATABASE - 49 QC Terms =====
         const database = [
-            { cn: "工厂", km: "រោងចក្រ" }, { cn: "车间", km: "រោងជាង / អាគារ" }, { cn: "办公室", km: "ការិយាល័យ" },
-            { cn: "班长", km: "ប្រធានក្រុម" }, { cn: "翻译", km: "អ្នកបកប្រែ" }, { cn: "注意安全", km: "ប្រយ័ត្នសុវត្ថិភាព" },
-            { cn: "上班", km: "ចូលធ្វើការ" }, { cn: "下班", km: "ចេញពីធ្វើការ" }, { cn: "请假", km: "សុំច្បាប់" },
-            { cn: "车架", km: "តួកង់" }, { cn: "前叉", km: "ឆ្ពោះមុខ (Fork)" }, { cn: "车把", km: "ដៃកង់" },
-            { cn: "车圈", km: "ខ្នងកង់" }, { cn: "外胎", km: "សំបកកង់" }, { cn: "脚踏", km: "ឈ្នាន់" },
-            { cn: "链条", km: "ច្រវាក់" }, { cn: "座垫", km: "កែប" }, { cn: "刹车", km: "ហ្វ្រាំង" },
-            { cn: "测量值", km: "តម្លៃវាស់ជាក់ស្តែង" }, { cn: "标准值", km: "តម្លៃស្តង់ដា" }, { cn: "上限", km: "ដែនកំណត់ លើ" },
-            { cn: "下限", km: "ដែនកំណត់ ក្រោម" }, { cn: "趋势图", km: "ក្រាបនិន្នាការ" }, { cn: "合格", km: "ជាប់ (OK)" },
-            { cn: "不合格", km: "ធ្លាក់ (NG)" }, { cn: "开裂", km: "ប្រេះ (Crack)" }, { cn: "焊破", km: "ផ្សាធ្លុះ" },
-            { cn: "漏焊", km: "ភ្លេចផ្សារ" }, { cn: "针眼", km: "ភ្នែកម្ជុល" }, { cn: "凹陷", km: "កំពិត / ផត" },
-            { cn: "焊道偏心", km: "ផ្សារវៀច" }, { cn: "电击伤", km: "ឆេះម៉ាស" }, { cn: "堆焊", km: "ផ្សារទូល" },
-            { cn: "咬边", km: "ស៊ីសាច់បំពង់" }, { cn: "间隙", km: "ចន្លោះ / ហើប" }, { cn: "碰刮伤", km: "ប៉ះទង្គិច / កោស" },
-            { cn: "焊渣", km: "កំទេចផ្សារ" }, { cn: "起泡", km: "ពង / ចូលខ្យល់" }, { cn: "标纸不良", km: "តែមមិនល្អ" },
-            { cn: "修补痕", km: "ស្នាមជួសជុល" }, { cn: "杂质", km: "ធូលី / កំទេចកំទី" }, { cn: "脏污", km: "ប្រឡាក់" },
-            { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង" }, { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា" },
-            { cn: "雾面", km: "ស្រអាប់" }, { cn: "橘皮", km: "សំបកក្រូច" }, { cn: "针孔", km: "រន្ធម្ជុល" },
-            { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ" }, { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ" }
+            { cn: "工厂", km: "រោងចក្រ" }, 
+            { cn: "车间", km: "រោងជាង / អាគារ" }, 
+            { cn: "办公室", km: "ការិយាល័យ" },
+            { cn: "班长", km: "ប្រធានក្រុម" }, 
+            { cn: "翻译", km: "អ្នកបកប្រែ" }, 
+            { cn: "注意安全", km: "ប្រយ័ត្នសុវត្ថិភាព" },
+            { cn: "上班", km: "ចូលធ្វើការ" }, 
+            { cn: "下班", km: "ចេញពីធ្វើការ" }, 
+            { cn: "请假", km: "សុំច្បាប់" },
+            { cn: "车架", km: "តួកង់" }, 
+            { cn: "前叉", km: "ឆ្ពោះមុខ (Fork)" }, 
+            { cn: "车把", km: "ដៃកង់" },
+            { cn: "车圈", km: "ខ្នងកង់" }, 
+            { cn: "外胎", km: "សំបកកង់" }, 
+            { cn: "脚踏", km: "ឈ្នាន់" },
+            { cn: "链条", km: "ច្រវាក់" }, 
+            { cn: "座垫", km: "កែប" }, 
+            { cn: "刹车", km: "ហ្វ្រាំង" },
+            { cn: "测量值", km: "តម្លៃវាស់ជាក់ស្តែង" }, 
+            { cn: "标准值", km: "តម្លៃស្តង់ដា" }, 
+            { cn: "上限", km: "ដែនកំណត់ លើ" },
+            { cn: "下限", km: "ដែនកំណត់ ក្រោម" }, 
+            { cn: "趋势图", km: "ក្រាបនិន្នាការ" }, 
+            { cn: "合格", km: "ជាប់ (OK)" },
+            { cn: "不合格", km: "ធ្លាក់ (NG)" }, 
+            { cn: "开裂", km: "ប្រេះ (Crack)" }, 
+            { cn: "焊破", km: "ផ្សាធ្លុះ" },
+            { cn: "漏焊", km: "ភ្លេចផ្សារ" }, 
+            { cn: "针眼", km: "ភ្នែកម្ជុល" }, 
+            { cn: "凹陷", km: "កំពិត / ផត" },
+            { cn: "焊道偏心", km: "ផ្សារវៀច" }, 
+            { cn: "电击伤", km: "ឆេះម៉ាស" }, 
+            { cn: "堆焊", km: "ផ្សារទូល" },
+            { cn: "咬边", km: "ស៊ីសាច់បំពង់" }, 
+            { cn: "间隙", km: "ចន្លោះ / ហើប" }, 
+            { cn: "碰刮伤", km: "ប៉ះទង្គិច / កោស" },
+            { cn: "焊渣", km: "កំទេចផ្សារ" }, 
+            { cn: "起泡", km: "ពង / ចូលខ្យល់" }, 
+            { cn: "标纸不良", km: "តែមមិនល្អ" },
+            { cn: "修补痕", km: "ស្នាមជួសជុល" }, 
+            { cn: "杂质", km: "ធូលី / កំទេចកំទី" }, 
+            { cn: "脏污", km: "ប្រឡាក់" },
+            { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង" }, 
+            { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា" },
+            { cn: "雾面", km: "ស្រអាប់" }, 
+            { cn: "橘皮", km: "សំបកក្រូច" }, 
+            { cn: "针孔", km: "រន្ធម្ជុល" },
+            { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ" }, 
+            { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ" }
         ];
 
+        // ===== STATE =====
         let quizUser = "";
         let qList = [];
         let cur = 0;
         let score = 0;
 
-        // Fix sound functionality for mobile browser
-        function speakStable(text) {
-            window.speechSynthesis.cancel(); 
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'zh-CN';
-            msg.rate = 0.8;
-            window.speechSynthesis.speak(msg);
+        // ===== HIGH QUALITY CHINESE VOICE =====
+        function speakChinese(text) {
+            // Using ResponsiveVoice for natural Chinese TTS
+            if(typeof responsiveVoice !== 'undefined') {
+                responsiveVoice.cancel();
+                responsiveVoice.speak(text, "Chinese Female", {
+                    pitch: 1,
+                    rate: 0.85,
+                    volume: 1
+                });
+            } else {
+                // Fallback to Web Speech API
+                window.speechSynthesis.cancel();
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'zh-CN';
+                msg.rate = 0.8;
+                msg.pitch = 1;
+                window.speechSynthesis.speak(msg);
+            }
         }
 
         function playVoiceManual() {
-            if (qList[cur]) speakStable(qList[cur].cn);
+            if (qList[cur]) {
+                const btn = document.getElementById('speakBtn');
+                btn.classList.add('playing');
+                speakChinese(qList[cur].cn);
+                setTimeout(() => btn.classList.remove('playing'), 800);
+            }
         }
 
-        // Send to Google Sheets Background
+        // ===== SEND SCORE TO GOOGLE SHEETS =====
         function postScore(name, pts) {
             const formID = "1FAIpQLSeDTCZHEGnvsvvkzUW30hvCE1A2O88kVUPHNzAqsAyngD0PTw";
             const url = `https://docs.google.com/forms/d/e/${formID}/formResponse`;
             const data = new FormData();
             data.append("entry.574845234", name);
             data.append("entry.499524849", pts + " / 10");
-            fetch(url, { method: "POST", mode: "no-cors", body: data }).catch(e => console.log(e));
+            
+            fetch(url, { 
+                method: "POST", 
+                mode: "no-cors", 
+                body: data 
+            }).catch(e => console.log("Submit error:", e));
         }
 
+        // ===== START QUIZ =====
         function beginQuiz() {
             quizUser = document.getElementById('staffName').value.trim();
-            if(!quizUser) { alert("សូមវាយឈ្មោះ!"); return; }
+            
+            if(!quizUser) {
+                alert("⚠️ សូមបញ្ចូលឈ្មោះ!\n请输入姓名!");
+                return;
+            }
+
+            // Hide login, show quiz
             document.getElementById('login-box').style.display = 'none';
             document.getElementById('quiz-box').style.display = 'block';
-            document.getElementById('staffTag').innerText = "បេក្ខជន៖ " + quizUser;
-            qList = [...database].sort(() => 0.5 - Math.random()).slice(0, 10);
+            document.getElementById('staffTag').innerText = "👤 " + quizUser;
+
+            // Randomize 10 questions
+            qList = [...database]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 10);
+
+            cur = 0;
+            score = 0;
             renderQuestion();
         }
 
+        // ===== RENDER QUESTION =====
         function renderQuestion() {
             const q = qList[cur];
+            
+            // Update UI
             document.getElementById('cnDisplay').innerText = q.cn;
             document.getElementById('qIdx').innerText = cur + 1;
-            document.getElementById('pFill').style.width = (cur / 10 * 100) + "%";
+            document.getElementById('pFill').style.width = ((cur / 10) * 100) + "%";
 
-            setTimeout(() => { speakStable(q.cn); }, 300);
+            // Auto-play voice after 400ms
+            setTimeout(() => { 
+                speakChinese(q.cn); 
+            }, 400);
 
-            let wrongOnes = database.filter(x => x.km !== q.km).sort(() => 0.5 - Math.random()).slice(0, 3);
-            let combined = [...wrongOnes, q].sort(() => 0.5 - Math.random());
+            // Generate 3 wrong answers + 1 correct
+            let wrongOnes = database
+                .filter(x => x.km !== q.km)
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 3);
+            
+            let combined = [...wrongOnes, q]
+                .sort(() => 0.5 - Math.random());
 
+            // Render options
             const grid = document.getElementById('optGrid');
             grid.innerHTML = '';
+            
             combined.forEach(obj => {
-                const b = document.createElement('button');
-                b.className = 'option-btn';
-                b.innerText = obj.km;
-                b.onclick = () => {
-                    document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
-                    if(obj.km === q.km) { b.classList.add('correct'); score++; }
-                    else { b.classList.add('wrong'); }
-                    setTimeout(() => {
-                        cur++;
-                        if(cur < 10) renderQuestion();
-                        else showFinish();
-                    }, 1200);
-                };
-                grid.appendChild(b);
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = obj.km;
+                btn.onclick = () => checkAnswer(btn, obj.km === q.km);
+                grid.appendChild(btn);
             });
         }
 
-        function showFinish() {
+        // ===== CHECK ANSWER =====
+        function checkAnswer(btn, isCorrect) {
+            // Disable all buttons
+            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+            if(isCorrect) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                // Show correct answer
+                document.querySelectorAll('.option-btn').forEach(b => {
+                    if(b.innerText === qList[cur].km) {
+                        b.classList.add('correct');
+                    }
+                });
+            }
+
+            // Next question after 1.5s
+            setTimeout(() => {
+                cur++;
+                if(cur < 10) {
+                    renderQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1500);
+        }
+
+        // ===== SHOW RESULT =====
+        function showResult() {
             document.getElementById('quiz-box').style.display = 'none';
             document.getElementById('result-box').style.display = 'block';
+
+            // Display score
             document.getElementById('finalUser').innerText = quizUser;
             document.getElementById('finalScore').innerText = score + " / 10";
+
+            // Result message
+            const msgEl = document.getElementById('resultMsg');
+            const iconEl = document.getElementById('resultIcon');
+            
+            if(score >= 8) {
+                msgEl.innerText = "🎉 ممتاز! ឆ្នើម!";
+                msgEl.className = "result-message pass";
+                iconEl.innerText = "🏆";
+            } else if(score >= 6) {
+                msgEl.innerText = "👍 ល្អ! 不错!";
+                msgEl.className = "result-message pass";
+                iconEl.innerText = "✅";
+            } else {
+                msgEl.innerText = "📚 ត្រូវការអនុវត្តបន្ថែម";
+                msgEl.className = "result-message fail";
+                iconEl.innerText = "💪";
+            }
+
+            // Send to Google Sheets
             postScore(quizUser, score);
+
+            // Progress bar to 100%
+            document.getElementById('pFill').style.width = "100%";
         }
+
+        // ===== ENTER KEY SUPPORT =====
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('staffName').addEventListener('keypress', function(e) {
+                if(e.key === 'Enter') beginQuiz();
+            });
+        });
     </script>
+
 </body>
 </html>
