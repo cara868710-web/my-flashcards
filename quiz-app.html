@@ -2,82 +2,83 @@
 <html lang="km">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QC Smart Test - ប្រព័ន្ធស្រង់ពិន្ទុឌីជីថល</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QC Skills Test - Stable Version</title>
     <style>
-        /* ==================== ឌីហ្សាញបែប Premium ==================== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Design Premium & Stable */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             font-family: 'Microsoft YaHei', 'Khmer OS Battambang', sans-serif;
-            background: linear-gradient(135deg, #0052cc 0%, #667eea 100%);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+            background: linear-gradient(135deg, #5067d3 0%, #3a4bb0 100%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px;
         }
         .container {
-            background: white; border-radius: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 100%; max-width: 500px; padding: 40px; text-align: center; position: relative;
+            background: white; border-radius: 25px; box-shadow: 0 15px 45px rgba(0,0,0,0.3);
+            width: 100%; max-width: 500px; padding: 30px; text-align: center;
         }
-        h1 { color: #0052cc; margin-bottom: 20px; font-size: 26px; }
+        h2 { color: #5067d3; margin-bottom: 15px; }
         input {
-            width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 15px;
+            width: 100%; padding: 16px; border: 2px solid #ddd; border-radius: 15px;
             font-size: 18px; font-family: 'Khmer OS Battambang'; margin-bottom: 20px; outline: none;
         }
-        input:focus { border-color: #0052cc; }
-        .btn-start, .btn-restart {
-            background: #0052cc; color: white; border: none; padding: 15px 30px;
+        input:focus { border-color: #5067d3; }
+        .btn-action {
+            background: #5067d3; color: white; border: none; padding: 16px;
             border-radius: 15px; font-size: 18px; cursor: pointer; font-weight: bold; width: 100%;
         }
-        /* Question Styles */
         #quiz-box, #result-box { display: none; }
-        .chinese-word { font-size: 70px; font-weight: bold; color: #333; margin: 20px 0; }
+        .staff-tag { font-weight: bold; color: #777; margin-bottom: 10px; font-size: 14px; }
+        .chinese-word { font-size: 68px; font-weight: bold; color: #222; margin: 15px 0; }
         .speak-btn {
-            background: #eef2f7; border: none; width: 50px; height: 50px; border-radius: 50%;
-            cursor: pointer; font-size: 20px; margin-bottom: 20px; transition: 0.3s;
+            background: #f0f3ff; border: none; width: 55px; height: 55px; border-radius: 50%;
+            cursor: pointer; font-size: 24px; margin-bottom: 15px; display: inline-flex; align-items: center; justify-content: center;
         }
-        .speak-btn:hover { background: #d0dae5; }
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .option-btn {
-            padding: 18px; border: 2px solid #eee; border-radius: 15px; background: white;
-            cursor: pointer; font-family: 'Khmer OS Battambang'; font-weight: bold; font-size: 16px;
+            padding: 15px 5px; border: 2px solid #f0f0f0; border-radius: 15px; background: white;
+            cursor: pointer; font-family: 'Khmer OS Battambang'; font-weight: bold; font-size: 16px; min-height: 80px;
+            transition: 0.2s;
         }
-        .correct { background: #2ecc71 !important; color: white; border-color: #27ae60; }
-        .wrong { background: #e74c3c !important; color: white; border-color: #c0392b; }
-        .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #2ecc71; width: 0%; transition: 0.3s; }
+        .correct { background: #2ecc71 !important; color: white; border-color: #2ecc71; }
+        .wrong { background: #e74c3c !important; color: white; border-color: #e74c3c; animation: shake 0.4s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .progress-bar { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #2ecc71; width: 0%; transition: width 0.3s linear; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- ១. ផ្ទាំងចុះឈ្មោះ (Login) -->
+        <!-- Screen 1: Registration -->
         <div id="login-box">
-            <h1>📋 ស្វាគមន៍បេក្ខជន</h1>
-            <p style="margin-bottom: 20px; color: #666;">សូមបញ្ចូលឈ្មោះដើម្បីចាប់ផ្ដើមតេស្ត</p>
-            <input type="text" id="staffName" placeholder="ឈ្មោះបុគ្គលិក / 姓名" autofocus>
-            <button class="btn-start" onclick="startTest()">ចាប់ផ្ដើមប្រឡង ➔</button>
+            <h2>📊 QC Skill Test</h2>
+            <p style="color: #666; margin-bottom: 20px;">សូមបញ្ចូលឈ្មោះដើម្បីចាប់ផ្ដើមតេស្ត</p>
+            <input type="text" id="staffName" placeholder="ឈ្មោះបុគ្គលិក / 姓名">
+            <button class="btn-action" onclick="beginQuiz()">ចាប់ផ្ដើមប្រឡង</button>
         </div>
 
-        <!-- ២. ផ្ទាំងសំណួរ (Quiz) -->
+        <!-- Screen 2: Quiz -->
         <div id="quiz-box">
-            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-            <p style="font-weight: bold; color: #888;">សំណួរទី <span id="qNum">1</span> / 10</p>
-            <div class="chinese-word" id="wordDisplay">...</div>
-            <button class="speak-btn" onclick="playVoice()">🔊</button>
-            <div class="options-grid" id="optionsGrid"></div>
+            <div class="staff-tag" id="staffTag"></div>
+            <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+            <p style="font-weight: bold; color: #aaa;">សំណួរ <span id="qIdx">1</span>/10</p>
+            <div class="chinese-word" id="cnDisplay">...</div>
+            <button class="speak-btn" onclick="playVoiceManual()">🔊</button>
+            <div class="options-grid" id="optGrid"></div>
         </div>
 
-        <!-- ៣. ផ្ទាំងលទ្ធផល (Result) -->
+        <!-- Screen 3: Result -->
         <div id="result-box">
             <h1 style="font-size: 50px;">🏆</h1>
-            <h2>លទ្ធផលរបស់អ្នក</h2>
-            <div id="finalScoreText" style="font-size: 60px; font-weight: bold; color: #0052cc; margin: 20px 0;">0 / 10</div>
-            <p id="feedbackText" style="margin-bottom: 30px; font-weight: bold; color: #555;"></p>
-            <p id="sendingLabel" style="color: #2ecc71; font-weight: bold;">📊 បញ្ជូនពិន្ទុចូល Sheet រួចរាល់!</p>
-            <button class="btn-restart" onclick="location.reload()">🔄 ប្រឡងម្ដងទៀត</button>
+            <h2 id="finalUser"></h2>
+            <div id="finalScore" style="font-size: 55px; font-weight: bold; color: #5067d3; margin: 15px 0;"></div>
+            <p id="sendingStatus" style="color: #27ae60; font-weight: bold;">✅ រក្សាទុកពិន្ទុរួចរាល់</p>
+            <button class="btn-action" style="margin-top: 20px;" onclick="location.reload()">🔄 ប្រឡងម្ដងទៀត</button>
         </div>
     </div>
 
     <script>
-        // --- ទិន្នន័យ (៤៩ ពាក្យ) ---
+        // Database - 49 words
         const database = [
             { cn: "工厂", km: "រោងចក្រ" }, { cn: "车间", km: "រោងជាង / អាគារ" }, { cn: "办公室", km: "ការិយាល័យ" },
             { cn: "班长", km: "ប្រធានក្រុម" }, { cn: "翻译", km: "អ្នកបកប្រែ" }, { cn: "注意安全", km: "ប្រយ័ត្នសុវត្ថិភាព" },
@@ -91,93 +92,88 @@
             { cn: "漏焊", km: "ភ្លេចផ្សារ" }, { cn: "针眼", km: "ភ្នែកម្ជុល" }, { cn: "凹陷", km: "កំពិត / ផត" },
             { cn: "焊道偏心", km: "ផ្សារវៀច" }, { cn: "电击伤", km: "ឆេះម៉ាស" }, { cn: "堆焊", km: "ផ្សារទូល" },
             { cn: "咬边", km: "ស៊ីសាច់បំពង់" }, { cn: "间隙", km: "ចន្លោះ / ហើប" }, { cn: "碰刮伤", km: "ប៉ះទង្គិច / កោស" },
-            { cn: "焊渣", km: "កំទេចផ្សារ" },
-            { cn: "起泡", km: "ពង / ចូលខ្យល់" }, { cn: "标纸不良", km: "តែមមិនល្អ" }, { cn: "修补痕", km: "ស្នាមជួសជុល" },
-            { cn: "杂质", km: "ធូលី / កំទេចកំទី" }, { cn: "脏污", km: "ប្រឡាក់" }, { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង" },
-            { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា" }, { cn: "雾面", km: "ស្រអាប់" }, { cn: "橘皮", km: "សំបកក្រូច" },
-            { cn: "针孔", km: "រន្ធម្ជុល" }, { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ" }, { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ" }
+            { cn: "焊渣", km: "កំទេចផ្សារ" }, { cn: "起泡", km: "ពង / ចូលខ្យល់" }, { cn: "标纸不良", km: "តែមមិនល្អ" },
+            { cn: "修补痕", km: "ស្នាមជួសជុល" }, { cn: "杂质", km: "ធូលី / កំទេចកំទី" }, { cn: "脏污", km: "ប្រឡាក់" },
+            { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង" }, { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា" },
+            { cn: "雾面", km: "ស្រអាប់" }, { cn: "橘皮", km: "សំបកក្រូច" }, { cn: "针孔", km: "រន្ធម្ជុល" },
+            { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ" }, { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ" }
         ];
 
-        let staffName = "";
-        let questions = [];
+        let quizUser = "";
+        let qList = [];
+        let cur = 0;
         let score = 0;
-        let index = 0;
 
-        // ១. មុខងារបាញ់ទិន្នន័យ (Google Sheet Automation)
-        function sendScoreToGoogle(name, finalScore) {
-            const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSeDTCZHEGnvsvvkzUW30hvCE1A2O88kVUPHNzAqsAyngD0PTw/formResponse";
-            const formData = new FormData();
-            
-            // ប្ដូរតាមលេខ Entry ID ក្នុងលីងរបស់អ្នក
-            formData.append("entry.574845234", name);       // សម្រាប់ ឈ្មោះ
-            formData.append("entry.499524849", finalScore); // សម្រាប់ ពិន្ទុ
-
-            fetch(formURL, { method: "POST", mode: "no-cors", body: formData })
-            .catch(error => console.log("Sending issue: ", error));
-        }
-
-        function startTest() {
-            staffName = document.getElementById('staffName').value.trim();
-            if(!staffName) return alert("សូមបញ្ចូលឈ្មោះសិន! / 请先输入姓名");
-            document.getElementById('login-box').style.display = 'none';
-            document.getElementById('quiz-box').style.display = 'block';
-            questions = [...database].sort(() => 0.5 - Math.random()).slice(0, 10);
-            loadNext();
-        }
-
-        function loadNext() {
-            const q = questions[index];
-            document.getElementById('wordDisplay').innerText = q.cn;
-            document.getElementById('qNum').innerText = index + 1;
-            document.getElementById('progressFill').style.width = (index / 10 * 100) + "%";
-            
-            setTimeout(playVoice, 500); // អានអូតូ
-
-            let options = database.filter(x => x.km !== q.km).sort(() => 0.5 - Math.random()).slice(0, 3);
-            options.push(q);
-            options.sort(() => 0.5 - Math.random());
-
-            const grid = document.getElementById('optionsGrid');
-            grid.innerHTML = '';
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt.km;
-                btn.onclick = () => {
-                    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
-                    if(opt.km === q.km) { btn.classList.add('correct'); score++; }
-                    else { btn.classList.add('wrong'); }
-                    
-                    setTimeout(() => {
-                        index++;
-                        if(index < 10) loadNext();
-                        else showResult();
-                    }, 1200);
-                };
-                grid.appendChild(btn);
-            });
-        }
-
-        function playVoice() {
-            window.speechSynthesis.cancel();
-            const msg = new SpeechSynthesisUtterance(document.getElementById('wordDisplay').innerText);
+        // Fix sound functionality for mobile browser
+        function speakStable(text) {
+            window.speechSynthesis.cancel(); 
+            const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'zh-CN';
             msg.rate = 0.8;
             window.speechSynthesis.speak(msg);
         }
 
-        function showResult() {
+        function playVoiceManual() {
+            if (qList[cur]) speakStable(qList[cur].cn);
+        }
+
+        // Send to Google Sheets Background
+        function postScore(name, pts) {
+            const formID = "1FAIpQLSeDTCZHEGnvsvvkzUW30hvCE1A2O88kVUPHNzAqsAyngD0PTw";
+            const url = `https://docs.google.com/forms/d/e/${formID}/formResponse`;
+            const data = new FormData();
+            data.append("entry.574845234", name);
+            data.append("entry.499524849", pts + " / 10");
+            fetch(url, { method: "POST", mode: "no-cors", body: data }).catch(e => console.log(e));
+        }
+
+        function beginQuiz() {
+            quizUser = document.getElementById('staffName').value.trim();
+            if(!quizUser) { alert("សូមវាយឈ្មោះ!"); return; }
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('quiz-box').style.display = 'block';
+            document.getElementById('staffTag').innerText = "បេក្ខជន៖ " + quizUser;
+            qList = [...database].sort(() => 0.5 - Math.random()).slice(0, 10);
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = qList[cur];
+            document.getElementById('cnDisplay').innerText = q.cn;
+            document.getElementById('qIdx').innerText = cur + 1;
+            document.getElementById('pFill').style.width = (cur / 10 * 100) + "%";
+
+            setTimeout(() => { speakStable(q.cn); }, 300);
+
+            let wrongOnes = database.filter(x => x.km !== q.km).sort(() => 0.5 - Math.random()).slice(0, 3);
+            let combined = [...wrongOnes, q].sort(() => 0.5 - Math.random());
+
+            const grid = document.getElementById('optGrid');
+            grid.innerHTML = '';
+            combined.forEach(obj => {
+                const b = document.createElement('button');
+                b.className = 'option-btn';
+                b.innerText = obj.km;
+                b.onclick = () => {
+                    document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+                    if(obj.km === q.km) { b.classList.add('correct'); score++; }
+                    else { b.classList.add('wrong'); }
+                    setTimeout(() => {
+                        cur++;
+                        if(cur < 10) renderQuestion();
+                        else showFinish();
+                    }, 1200);
+                };
+                grid.appendChild(b);
+            });
+        }
+
+        function showFinish() {
             document.getElementById('quiz-box').style.display = 'none';
             document.getElementById('result-box').style.display = 'block';
-            document.getElementById('finalScoreText').innerText = score + " / 10";
-            
-            const feedback = document.getElementById('feedbackText');
-            if(score === 10) feedback.innerText = "អស្ចារ្យ! អ្នកគឺជា QC កំពូល! 🌟";
-            else if(score >= 7) feedback.innerText = "ល្អណាស់! ស៊ូៗ! 👍";
-            else feedback.innerText = "ខំប្រឹងរៀនបន្ថែមទៀតណា! 💪";
-
-            // បញ្ជូនលទ្ធផលទៅ Google Sheet ភ្លាមៗ
-            sendScoreToGoogle(staffName, score);
+            document.getElementById('finalUser').innerText = quizUser;
+            document.getElementById('finalScore').innerText = score + " / 10";
+            postScore(quizUser, score);
         }
     </script>
 </body>
