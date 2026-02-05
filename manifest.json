@@ -1,0 +1,15 @@
+{
+  "name": "QC Smart Quiz",
+  "short_name": "QC App",
+  "start_url": "quiz-app.html",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
