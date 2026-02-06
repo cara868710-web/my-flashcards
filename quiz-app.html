@@ -218,14 +218,30 @@
         }
 
         function postScore(name, pts) {
-            // Updated Google Form Link
-            const url = "https://docs.google.com/forms/d/e/1FAIpQLSewAOFk30IYgR9ZIVR8yZozbbprXFzI18P-aZV6XJi8cFCUoQ/formResponse";
-            const data = new URLSearchParams();
-            data.append("entry.2026832449", name); 
-            data.append("entry.1026172260", pts + " / 10");
+            // ១. អាសយដ្ឋានបាញ់ទិន្នន័យទៅកាន់ Google Form ថ្មីរបស់បង
+    const url = "https://docs.google.com/forms/d/e/1FAIpQLSewAOFk30IYgR9ZIVR8yZozbbprXFzI18P-aZV6XJi8cFCUoQ/formResponse";
+    
+    // ២. បង្កើតទម្រង់ទិន្នន័យឱ្យត្រូវតាម Entry ID ថ្មី
+    const params = new URLSearchParams();
+    params.append("entry.2026832449", name);          // លេខ ID សម្រាប់ Name
+    params.append("entry.1026172260", pts + " / 10"); // លេខ ID សម្រាប់ Score
 
-            fetch(url, { method: "POST", mode: "no-cors", body: data })
-            .catch(e => console.error("Error saving:", e));
+    // ៣. បញ្ជាឱ្យបាញ់ទិន្នន័យ (រត់ក្នុង Background មិនឱ្យរំខានការលេង)
+    fetch(url, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: params.toString()
+    })
+    .then(() => {
+        console.log("Recorded Success!");
+        document.getElementById('sendingStatus').innerText = "✅ រក្សាទុកពិន្ទុជោគជ័យ";
+    })
+    .catch(e => {
+        console.error("Submission Error:", e);
+    });
         }
 
         function beginQuiz() {
@@ -326,3 +342,4 @@
     </script>
 </body>
 </html>
+
