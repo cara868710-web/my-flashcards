@@ -348,22 +348,100 @@
             flex: 1;
             text-align: left;
         }
+        /* ── Speak Button ────────────────────────────────────────────── */
         .speak-btn {
             flex-shrink: 0;
-            width: 52px; height: 52px;
+            width: 58px; height: 58px;
             background: rgba(79,142,247,0.1);
-            border: 1.5px solid rgba(79,142,247,0.3);
+            border: 1.5px solid rgba(79,142,247,0.35);
             border-radius: 14px;
-            font-size: 22px;
             cursor: pointer;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s, transform 0.15s;
+            gap: 5px;
+            transition: background 0.2s, transform 0.15s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
         }
         .speak-btn:active {
             background: rgba(79,142,247,0.25);
             transform: scale(0.93);
+        }
+        .speak-btn .sp-icon {
+            font-size: 22px;
+            line-height: 1;
+            transition: opacity 0.2s;
+        }
+        /* Sound wave bars */
+        .wave-bars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 12px;
+        }
+        .wave-bars span {
+            display: block;
+            width: 3px;
+            border-radius: 3px;
+            background: var(--primary);
+            height: 4px;
+            transition: height 0.1s;
+        }
+        /* Idle state: flat bars */
+        .speak-btn:not(.speaking) .wave-bars span { height: 4px; }
+        /* Speaking state */
+        .speak-btn.speaking {
+            background: rgba(79,142,247,0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,142,247,0.18);
+        }
+        .speak-btn.speaking .sp-icon { opacity: 0.5; }
+        .speak-btn.speaking .wave-bars span:nth-child(1) { animation: bar 0.7s 0.0s ease-in-out infinite; }
+        .speak-btn.speaking .wave-bars span:nth-child(2) { animation: bar 0.7s 0.1s ease-in-out infinite; }
+        .speak-btn.speaking .wave-bars span:nth-child(3) { animation: bar 0.7s 0.2s ease-in-out infinite; }
+        .speak-btn.speaking .wave-bars span:nth-child(4) { animation: bar 0.7s 0.3s ease-in-out infinite; }
+        .speak-btn.speaking .wave-bars span:nth-child(5) { animation: bar 0.7s 0.15s ease-in-out infinite; }
+        @keyframes bar {
+            0%, 100% { height: 3px; }
+            50%       { height: 12px; }
+        }
+        /* Speed toggle pill */
+        .speed-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .speed-lbl {
+            font-family: 'Battambang', sans-serif;
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .speed-toggle {
+            display: flex;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        .speed-toggle button {
+            padding: 4px 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            transition: background 0.15s, color 0.15s;
+        }
+        .speed-toggle button.active {
+            background: var(--primary);
+            color: #fff;
+            border-radius: 100px;
         }
 
         /* Hint row */
@@ -481,7 +559,7 @@
         }
         .result-score-num {
             font-family: 'Orbitron', sans-serif;
-            font-size: 30px;
+            font-size: 22px;
             font-weight: 900;
             color: var(--text);
             line-height: 1;
@@ -582,11 +660,11 @@
 
         <div class="info-row">
             <div class="info-chip">
-                <div class="num">10</div>
+                <div class="num" id="chipTotal">–</div>
                 <div class="lbl">សំណួរ</div>
             </div>
             <div class="info-chip">
-                <div class="num">49</div>
+                <div class="num" id="chipWords">–</div>
                 <div class="lbl">ពាក្យ QC</div>
             </div>
         </div>
@@ -606,7 +684,7 @@
                 <span id="staffNameDisplay">...</span>
             </div>
             <div class="score-live">
-                ⭐ <span id="livScore">0</span>/10
+                ⭐ <span id="livScore">0</span>/<span id="livTotal">–</span>
             </div>
         </div>
 
@@ -630,13 +708,26 @@
         <!-- Word display -->
         <div class="word-card">
             <div class="chinese-word" id="wordDisplay">...</div>
-            <button class="speak-btn" onclick="playVoice()" title="ស្ដាប់សំឡេង">🔊</button>
+            <button class="speak-btn" id="speakBtn" onclick="playVoice()" title="ស្ដាប់សំឡេង">
+                <span class="sp-icon">🔊</span>
+                <div class="wave-bars">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </button>
         </div>
 
-        <!-- Hint -->
+        <!-- Hint + Speed -->
         <div class="hint-row">
             <div class="hint-dot"></div>
             <div class="hint-text">ជ្រើសរើសអត្ថន័យត្រូវ</div>
+        </div>
+        <div class="speed-row">
+            <span class="speed-lbl">ល្បឿនសំឡេង:</span>
+            <div class="speed-toggle">
+                <button id="spdNorm" class="active" onclick="setSpeed(1.0, this)">1×</button>
+                <button id="spdSlow" onclick="setSpeed(0.65, this)">0.6×</button>
+                <button id="spdSlower" onclick="setSpeed(0.45, this)">0.4×</button>
+            </div>
         </div>
 
         <!-- Options -->
@@ -734,23 +825,110 @@ let quizList = [];
 let cur = 0;
 let score = 0;
 
-/* ── Audio unlock (iOS) ──────────────────────────────────────────────── */
+/* ── Audio Engine ────────────────────────────────────────────────────── */
+let currentAudio = null;   // active Audio element
+let ttsSpeed     = 1.0;    // user-selected speed multiplier
+
+function setSpeed(val, btn) {
+    ttsSpeed = val;
+    document.querySelectorAll('.speed-toggle button')
+        .forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function setSpeaking(on) {
+    const btn = document.getElementById('speakBtn');
+    if (!btn) return;
+    if (on) btn.classList.add('speaking');
+    else    btn.classList.remove('speaking');
+}
+
+/**
+ * Primary: Google Translate TTS  — natural human Mandarin voice.
+ * Fallback: SpeechSynthesis API  — browser built-in (robotic but always works).
+ *
+ * Google Translate TTS does NOT require an API key.
+ * It is the same engine used on translate.google.com.
+ * The `client=gtx` parameter is the standard lightweight client identifier.
+ */
+function playVoice() {
+    if (!quizList.length) return;
+
+    // Stop anything currently playing
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
+    window.speechSynthesis.cancel();
+    setSpeaking(false);
+
+    const text  = quizList[cur].cn;
+    const speed = Math.max(0.35, Math.min(ttsSpeed, 1.0));
+
+    // ── Try Google Translate TTS first ─────────────────────────────────
+    // Speed mapping: Google TTS accepts ttsspeed 0–1 where 1=fast, 0.24=slow
+    const gttsSpeed = (speed * 0.9).toFixed(2);   // scale to Google's range
+    const url = `https://translate.google.com/translate_tts`
+              + `?ie=UTF-8&q=${encodeURIComponent(text)}&tl=zh-CN`
+              + `&client=gtx&ttsspeed=${gttsSpeed}`;
+
+    const audio = new Audio(url);
+    audio.playbackRate = 1.0;   // Google handles speed natively via ttsspeed
+    currentAudio = audio;
+
+    setSpeaking(true);
+
+    audio.onended = () => { setSpeaking(false); currentAudio = null; };
+    audio.onerror = () => {
+        // ── Fallback: SpeechSynthesis ───────────────────────────────────
+        setSpeaking(false);
+        currentAudio = null;
+        useSpeechSynthesis(text, speed);
+    };
+
+    // Catch cases where play() returns a rejected Promise (CORS / network)
+    audio.play().catch(() => {
+        setSpeaking(false);
+        currentAudio = null;
+        useSpeechSynthesis(text, speed);
+    });
+}
+
+function useSpeechSynthesis(text, speed) {
+    window.speechSynthesis.cancel();
+    setSpeaking(true);
+    const u  = new SpeechSynthesisUtterance(text);
+    u.lang   = 'zh-CN';
+    u.rate   = Math.max(0.3, speed * 0.85);
+
+    // Try to pick the best Mandarin voice available in the browser
+    const voices = window.speechSynthesis.getVoices();
+    const cnVoice = voices.find(v =>
+        v.lang === 'zh-CN' && /Google|Microsoft|Meijia|Ting-Ting/.test(v.name)
+    ) || voices.find(v => v.lang === 'zh-CN')
+      || voices.find(v => v.lang.startsWith('zh'));
+    if (cnVoice) u.voice = cnVoice;
+
+    u.onend = () => setSpeaking(false);
+    u.onerror = () => setSpeaking(false);
+    window.speechSynthesis.speak(u);
+}
+
 function unlockAudio() {
+    // iOS requires a user-gesture to unlock audio context.
+    // We create a tiny silent Audio AND a silent Utterance to unlock both paths.
+    try {
+        const silence = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=");
+        silence.volume = 0;
+        silence.play().catch(() => {});
+    } catch(e) {}
     try {
         const u = new SpeechSynthesisUtterance(" ");
         u.volume = 0;
         window.speechSynthesis.speak(u);
     } catch(e) {}
-}
-
-/* ── TTS ─────────────────────────────────────────────────────────────── */
-function playVoice() {
-    if (!quizList.length) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(quizList[cur].cn);
-    u.lang  = 'zh-CN';
-    u.rate  = 0.8;
-    window.speechSynthesis.speak(u);
+    // Pre-load voice list for SpeechSynthesis fallback
+    window.speechSynthesis.getVoices();
 }
 
 /* ── Start ───────────────────────────────────────────────────────────── */
@@ -770,8 +948,15 @@ function startApp() {
     qBox.classList.add('fade-in');
 
     document.getElementById('staffNameDisplay').innerText = userName;
-    quizList = [...database].sort(() => 0.5 - Math.random()).slice(0, 10);
+
+    // ── Use ALL words in database — auto-adjusts when words are added ──
+    quizList = [...database].sort(() => 0.5 - Math.random());
     cur = 0; score = 0;
+
+    // Set live total counter
+    const total = quizList.length;
+    document.getElementById('livTotal').innerText = total;
+
     showQ();
 }
 
@@ -780,8 +965,8 @@ function showQ() {
     const q = quizList[cur];
 
     // Progress
-    document.getElementById('pFill').style.width   = (cur / 10 * 100) + "%";
-    document.getElementById('qNum').innerText       = (cur + 1) + " / 10";
+    document.getElementById('pFill').style.width   = (cur / quizList.length * 100) + "%";
+    document.getElementById('qNum').innerText       = (cur + 1) + " / " + quizList.length;
     document.getElementById('livScore').innerText   = score;
 
     // Word
@@ -840,7 +1025,7 @@ function handleAnswer(btn, selected, correct) {
 
     setTimeout(() => {
         cur++;
-        if (cur < 10) showQ();
+        if (cur < quizList.length) showQ();
         else showResult();
     }, 1300);
 }
@@ -853,19 +1038,22 @@ function showResult() {
     box.style.display = 'block';
     box.classList.add('fade-in');
 
+    const total = quizList.length;
+    const pct   = score / total;   // 0–1
+
     document.getElementById('finalUser').innerText    = userName;
-    document.getElementById('finalScoreNum').innerText = score + "/10";
+    document.getElementById('finalScoreNum').innerText = score + "/" + total;
 
     // Animated conic ring
-    const pct = (score / 10 * 100).toFixed(0);
-    document.getElementById('scoreRing').style.setProperty('--pct', pct + '%');
+    document.getElementById('scoreRing')
+        .style.setProperty('--pct', (pct * 100).toFixed(0) + '%');
 
-    // Grade & trophy
+    // ── Grade based on percentage (auto-scales for any database size) ──
     let grade, gradeClass, trophy, msg;
-    if (score === 10)       { grade="S — ល្អឥតខ្ចោះ!"; gradeClass="grade-s"; trophy="🏆"; msg="អ្នកឈ្នះ 100%! លទ្ធផលឥតខ្ចោះ ✨"; }
-    else if (score >= 8)    { grade="A — ល្អណាស់";    gradeClass="grade-a"; trophy="🥇"; msg="លទ្ធផលល្អ! បន្តរៀនសូម្បី!"; }
-    else if (score >= 6)    { grade="B — ល្អបង្គួរ";  gradeClass="grade-b"; trophy="🥈"; msg="ល្អ! ប៉ុន្តែត្រូវបន្តអភិវឌ្ឍ!"; }
-    else                    { grade="C — ត្រូវកែ";    gradeClass="grade-c"; trophy="📚"; msg="ត្រូវការអានឡើងវិញ! ព្យាយាមម្ដងទៀត!"; }
+    if (pct === 1)       { grade="S — ល្អឥតខ្ចោះ!"; gradeClass="grade-s"; trophy="🏆"; msg="100%! ឥតខ្ចោះមែន! ✨"; }
+    else if (pct >= 0.8) { grade="A — ល្អណាស់";     gradeClass="grade-a"; trophy="🥇"; msg="លទ្ធផលល្អ! បន្តប្រឹងបន្ថែម!"; }
+    else if (pct >= 0.6) { grade="B — ល្អបង្គួរ";   gradeClass="grade-b"; trophy="🥈"; msg="ល្អ! ប៉ុន្តែត្រូវបន្តអភិវឌ្ឍ!"; }
+    else                 { grade="C — ត្រូវកែ";     gradeClass="grade-c"; trophy="📚"; msg="ត្រូវការអានឡើងវិញ! ព្យាយាមម្ដងទៀត!"; }
 
     document.getElementById('resTrophy').innerText = trophy;
     const gradeEl = document.getElementById('gradeChip');
@@ -873,12 +1061,12 @@ function showResult() {
     gradeEl.className = 'result-grade ' + gradeClass;
     document.getElementById('resultMsg').innerText = msg;
 
-    if (score >= 7) {
+    if (pct >= 0.7) {
         confetti({ particleCount: 160, spread: 80, origin: { y: 0.55 } });
     }
 
-    // Send to Google Sheets
-    postToGoogleSheet(userName, score + " / 10");
+    // Send to Google Sheets — dynamic total
+    postToGoogleSheet(userName, score + " / " + total);
 }
 
 /* ── Google Sheets POST ──────────────────────────────────────────────── */
@@ -915,6 +1103,22 @@ document.addEventListener('keydown', e => {
         }
     }
 });
+
+/* ── AUTO-INIT: populate chips from database (runs every page load) ──────
+   ➜ ពេលបន្ថែមពាក្យក្នុង database array ចំនួននឹង UPDATE ដោយស្វ័យប្រវត្តិ
+   ───────────────────────────────────────────────────────────────────── */
+(function initChips() {
+    const n = database.length;
+    const chipTotal = document.getElementById('chipTotal');
+    const chipWords = document.getElementById('chipWords');
+    if (chipTotal) chipTotal.innerText = n;   // "49" or however many
+    if (chipWords) chipWords.innerText = n;   // same — all words will be tested
+    // Pre-load SpeechSynthesis voice list for better fallback quality
+    if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        window.speechSynthesis.getVoices();
+    }
+})();
 </script>
 </body>
 </html>
