@@ -3,135 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QC Smart Test - Visual Pro</title>
+    <title>QC Visual Pro - iOS Stable</title>
     
-    <!-- App Config & Fonts -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="logo.png">
+    <!-- Fonts & Scripts -->
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root {
-            --primary: #0072ff;
-            --secondary: #00c6ff;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --bg: #f5f7fa;
-        }
-
+        :root { --primary: #0072ff; --secondary: #00c6ff; --success: #2ecc71; --danger: #e74c3c; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Battambang', 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; }
+        .container { background: white; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 100%; max-width: 480px; padding: 30px; text-align: center; }
 
-        body {
-            font-family: 'Battambang', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-        }
+        .defect-image-box { width: 100%; height: 200px; background: #f8f9fa; border-radius: 20px; margin-bottom: 15px; display: none; overflow: hidden; border: 2px solid #eef2f7; }
+        .defect-image-box img { width: 100%; height: 100%; object-fit: contain; }
 
-        .container {
-            background: rgba(255, 255, 255, 1);
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 480px;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
+        input { width: 100%; padding: 18px; border: 2px solid #ddd; border-radius: 15px; font-size: 18px; margin-bottom: 20px; outline: none; text-align: center; font-family: 'Battambang'; }
+        .btn-action { background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 18px; cursor: pointer; font-weight: bold; width: 100%; font-family: 'Battambang'; }
 
-        /* ផ្នែកបង្ហាញរូបភាព */
-        .defect-image-box {
-            width: 100%;
-            height: 200px;
-            background: #f8f9fa;
-            border-radius: 20px;
-            margin: 15px 0;
-            overflow: hidden;
-            border: 2px solid #eef2f7;
-            display: none; /* លាក់បើអត់រូប */
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .defect-image-box img {
-            width: 100%; height: 100%; object-fit: contain;
-        }
-
-        h2 { color: var(--primary); margin-bottom: 10px; }
-        input {
-            width: 100%; padding: 18px; border: 2px solid #ddd; border-radius: 15px;
-            font-size: 18px; margin-bottom: 20px; outline: none; text-align: center; font-family: 'Battambang';
-        }
-        .btn-action {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white; border: none; padding: 18px; border-radius: 15px;
-            font-size: 18px; cursor: pointer; font-weight: bold; width: 100%; font-family: 'Battambang';
-        }
-
-        /* Quiz UI */
         #quiz-box, #result-box { display: none; }
         .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
-        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.3s linear; }
-
-        .chinese-word { font-size: 60px; font-weight: bold; color: #222; margin: 10px 0; line-height: 1.1; }
-        .speak-btn { background: #f0f4ff; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; margin-bottom: 15px; transition: 0.2s; }
-        .speak-btn:hover { background: #dce4ff; }
-
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.3s; }
+        .chinese-word { font-size: 60px; font-weight: bold; color: #222; margin: 10px 0; }
+        .speak-btn { background: #f0f4ff; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; margin-bottom: 15px; }
+        
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .option-btn {
-            padding: 10px; border: 2px solid #f0f0f0; border-radius: 15px; background: white;
-            cursor: pointer; font-family: 'Battambang'; font-weight: bold; font-size: 15px;
-            min-height: 85px; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        }
-        .correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
-        .wrong { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; animation: shake 0.4s; }
-
+        .option-btn { padding: 10px; border: 2px solid #f0f0f0; border-radius: 15px; background: white; cursor: pointer; font-family: 'Battambang'; font-weight: bold; font-size: 15px; min-height: 85px; }
+        .correct { background: var(--success) !important; color: white !important; }
+        .wrong { background: var(--danger) !important; color: white !important; animation: shake 0.4s; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- ផ្ទាំង Login -->
+        <!-- Login -->
         <div id="login-box">
-            <h2>🏆 QC Certification</h2>
-            <p style="margin: 15px 0; color: #666;">សូមបញ្ចូលឈ្មោះដើម្បីចាប់ផ្ដើមតេស្ត</p>
-            <input type="text" id="staffName" placeholder="ឈ្មោះបុគ្គលិក / 姓名" autocomplete="off">
+            <h2 style="color: var(--primary);">🏆 QC Smart Test</h2>
+            <p style="margin: 15px 0; color: #666;">បញ្ចូលឈ្មោះដើម្បីចាប់ផ្ដើមតេស្ត</p>
+            <input type="text" id="staffName" placeholder="ឈ្មោះបុគ្គលិក / 姓名">
             <button class="btn-action" onclick="startApp()">ចូលរួមតេស្ត ➔</button>
         </div>
 
-        <!-- ផ្ទាំងសំណួរ -->
+        <!-- Quiz -->
         <div id="quiz-box">
             <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
-            <p style="font-weight: bold; color: #888;">សំណួរ <span id="qIdx">1</span> / 10</p>
-            
-            <div class="defect-image-box" id="imgBox">
-                <img id="defectImage" src="" alt="Defect Visual">
-            </div>
-
+            <p id="staffNameDisplay" style="font-weight: bold; color: #667eea;"></p>
+            <div class="defect-image-box" id="imgBox"><img id="defectImage" src=""></div>
             <div class="chinese-word" id="wordDisplay">...</div>
             <button class="speak-btn" onclick="playVoice()">🔊</button>
             <div class="options-grid" id="optGrid"></div>
         </div>
 
-        <!-- ផ្ទាំងលទ្ធផល -->
+        <!-- Result -->
         <div id="result-box">
-            <h1 style="font-size: 60px;">🥇</h1>
-            <h3 id="finalUserName" style="color:#555;">...</h3>
-            <div id="finalScore" style="font-size: 60px; font-weight: bold; color: var(--primary); margin: 15px 0;">0 / 10</div>
-            <p id="sendingStatus" style="color: var(--success); font-weight: bold;">✅ បញ្ជូនលទ្ធផលចូល Sheet រួចរាល់</p>
+            <h1 style="font-size: 50px;">🥇</h1>
+            <h3 id="finalUser">...</h3>
+            <div id="finalScore" style="font-size: 60px; font-weight: bold; color: var(--primary); margin: 15px 0;">0/10</div>
+            <p id="sendingStatus" style="color: var(--success); font-weight: bold;">✅ រក្សាទុកពិន្ទុរួចរាល់</p>
             <button class="btn-action" style="margin-top: 25px;" onclick="location.reload()">ធ្វើតេស្តម្ដងទៀត</button>
         </div>
     </div>
 
     <script>
-        // DATABASE ពេញលេញ ៤៩ ពាក្យ
-        // សេចក្តីណែនាំ៖ ត្រង់ img សូមដាក់ឈ្មោះ File ដែលបងបាន upload ចូល GitHub
+        // ខ្លឹមសារ Database (រក្សាដូចមុន តែបងអាចប្ដូរឈ្មោះរូបភាពក្នុង img ឱ្យត្រូវតាម GitHub)
         const database = [
             { cn: "起泡", km: "ពង / ចូលខ្យល់", img: "qipao.jpg" },
             { cn: "标纸不良", km: "តែមមិនល្អ", img: "biaozhibuliang.jpg" },
@@ -186,18 +121,31 @@
 
         let userName = ""; let quizList = []; let cur = 0; let score = 0;
 
+        // មុខងារជួសជុលសម្លេងលើ iPhone (Audio Engine Pre-warming)
+        function unlockAudio() {
+            const msg = new SpeechSynthesisUtterance("សួស្ដី");
+            msg.volume = 0; // អានអត់ឱ្យលឺ ក្នុងពេល user ចុចប៊ូតុង ដើម្បីបើកសោរ iOS
+            window.speechSynthesis.speak(msg);
+        }
+
         function playVoice() {
             window.speechSynthesis.cancel();
-            const msg = new SpeechSynthesisUtterance(quizList[cur].cn);
-            msg.lang = 'zh-CN'; msg.rate = 0.8;
+            const q = quizList[cur];
+            const msg = new SpeechSynthesisUtterance(q.cn);
+            msg.lang = 'zh-CN'; 
+            msg.rate = 0.8; 
             window.speechSynthesis.speak(msg);
         }
 
         function startApp() {
             userName = document.getElementById('staffName').value.trim();
-            if(!userName) return alert("សូមវាយឈ្មោះសិន!");
+            if(!userName) return alert("សូមបញ្ចូលឈ្មោះ!");
+            
+            unlockAudio(); // បើកសោរសម្លេងលើ iPhone
+            
             document.getElementById('login-box').style.display = 'none';
             document.getElementById('quiz-box').style.display = 'block';
+            document.getElementById('staffNameDisplay').innerText = "បេក្ខជន៖ " + userName;
             quizList = [...database].sort(() => 0.5 - Math.random()).slice(0, 10);
             showQ();
         }
@@ -205,13 +153,11 @@
         function showQ() {
             const q = quizList[cur];
             document.getElementById('wordDisplay').innerText = q.cn;
-            document.getElementById('qIdx').innerText = cur + 1;
             document.getElementById('pFill').style.width = (cur / 10 * 100) + "%";
-
-            // បង្ហាញរូបភាពបើមានក្នុង Database
+            
             const imgBox = document.getElementById('imgBox');
             const imgTag = document.getElementById('defectImage');
-            if(q.img) {
+            if(q.img && q.img !== "") {
                 imgTag.src = q.img;
                 imgBox.style.display = 'block';
             } else {
@@ -220,45 +166,63 @@
 
             setTimeout(playVoice, 500);
 
-            let options = database.filter(x => x.km !== q.km).sort(() => 0.5 - Math.random()).slice(0, 3);
-            options.push(q);
-            options.sort(() => 0.5 - Math.random());
+            let wrongOnes = database.filter(x => x.km !== q.km).sort(() => 0.5 - Math.random()).slice(0, 3);
+            let combined = [...wrongOnes, q].sort(() => 0.5 - Math.random());
 
             const grid = document.getElementById('optGrid');
             grid.innerHTML = '';
-            options.forEach(opt => {
+            combined.forEach(obj => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.innerText = opt.km;
+                btn.innerText = obj.km;
                 btn.onclick = () => {
                     document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
-                    if(opt.km === q.km) { btn.classList.add('correct'); score++; }
-                    else { 
-                        btn.classList.add('wrong');
-                        document.querySelectorAll('.option-btn').forEach(b => { if(b.innerText === q.km) b.classList.add('correct'); });
-                    }
-                    setTimeout(() => { cur++; if(cur < 10) showQ(); else showResult(); }, 1200);
+                    if(obj.km === q.km) { btn.classList.add('correct'); score++; }
+                    else { btn.classList.add('wrong'); }
+                    setTimeout(() => { 
+                        cur++; 
+                        if(cur < 10) showQ(); 
+                        else showResult(); 
+                    }, 1200);
                 };
                 grid.appendChild(btn);
+            });
+        }
+
+        function postToGoogleSheet(name, finalPts) {
+            // URL Google FormResponse ផ្លូវការរបស់បង
+            const url = "https://docs.google.com/forms/d/e/1FAIpQLSewAOFk30IYgR9ZIVR8yZozbbprXFzI18P-aZV6XJi8cFCUoQ/formResponse";
+            
+            // បច្ចេកទេសបញ្ជូនទិន្នន័យឱ្យហោះចូល ១០០% (URL Encoded)
+            const formData = new URLSearchParams();
+            formData.append("entry.2026832449", name);      // លេខ ID សំណួរឈ្មោះ
+            formData.append("entry.1026172260", finalPts); // លេខ ID សំណួរពិន្ទុ
+
+            fetch(url, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formData.toString()
+            })
+            .then(() => {
+                document.getElementById('sendingStatus').innerText = "✅ រក្សាទុកក្នុង Google Sheet រួចរាល់";
+            })
+            .catch(() => {
+                document.getElementById('sendingStatus').innerText = "❌ បញ្ហាអ៊ីនធឺណិត (សូមផ្ញើ Screen ឱ្យមេ)";
             });
         }
 
         function showResult() {
             document.getElementById('quiz-box').style.display = 'none';
             document.getElementById('result-box').style.display = 'block';
+            document.getElementById('finalUser').innerText = "ឈ្មោះ៖ " + userName;
             document.getElementById('finalScore').innerText = score + " / 10";
-            document.getElementById('finalUserName').innerText = userName;
 
             if(score >= 7) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-
-            // បាញ់ពិន្ទុអូតូ
-            const url = "https://docs.google.com/forms/d/e/1FAIpQLSewAOFk30IYgR9ZIVR8yZozbbprXFzI18P-aZV6XJi8cFCUoQ/formResponse";
-            const params = new URLSearchParams();
-            params.append("entry.2026832449", userName);
-            params.append("entry.1026172260", score + " / 10");
-            fetch(url, { method: "POST", mode: "no-cors", body: params.toString() });
+            
+            // ហៅមុខងារបញ្ជូនទិន្នន័យ
+            postToGoogleSheet(userName, score + " / 10");
         }
     </script>
 </body>
 </html>
-
