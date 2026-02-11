@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QC Smart Test - Pro</title>
+    <title>QC Smart Test - Visual Pro</title>
     
+    <!-- App Config & Fonts -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -30,316 +36,228 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 1);
             border-radius: 30px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             width: 100%;
-            max-width: 450px;
-            padding: 35px;
+            max-width: 480px;
+            padding: 30px;
             text-align: center;
-            transition: all 0.3s ease;
+            position: relative;
         }
 
-        /* Elements */
-        h2 { color: #333; margin-bottom: 15px; font-size: 24px; }
-        
-        input {
+        /* ផ្នែកបង្ហាញរូបភាព */
+        .defect-image-box {
             width: 100%;
-            padding: 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            outline: none;
-            transition: 0.3s;
-            text-align: center;
-            font-family: 'Battambang';
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 2px solid #eef2f7;
+            display: none; /* លាក់បើអត់រូប */
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .defect-image-box img {
+            width: 100%; height: 100%; object-fit: contain;
         }
 
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,114,255,0.2); }
-
+        h2 { color: var(--primary); margin-bottom: 10px; }
+        input {
+            width: 100%; padding: 18px; border: 2px solid #ddd; border-radius: 15px;
+            font-size: 18px; margin-bottom: 20px; outline: none; text-align: center; font-family: 'Battambang';
+        }
         .btn-action {
             background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 15px;
-            font-size: 18px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            box-shadow: 0 5px 15px rgba(0,114,255,0.3);
-            transition: 0.3s;
-            font-family: 'Battambang';
+            color: white; border: none; padding: 18px; border-radius: 15px;
+            font-size: 18px; cursor: pointer; font-weight: bold; width: 100%; font-family: 'Battambang';
         }
-
-        .btn-action:active { transform: scale(0.98); }
 
         /* Quiz UI */
         #quiz-box, #result-box { display: none; }
-        
-        .progress-container { margin-bottom: 20px; }
-        .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.5s; }
+        .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.3s linear; }
 
-        .chinese-word { 
-            font-size: 60px; 
-            font-weight: bold; 
-            color: #1a1a1a; 
-            margin: 20px 0;
-            min-height: 80px;
-            line-height: 1.2;
-        }
-
-        .speak-btn {
-            background: #fff;
-            border: 2px solid #eee;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .speak-btn:hover { background: #f9f9f9; transform: scale(1.1); }
+        .chinese-word { font-size: 60px; font-weight: bold; color: #222; margin: 10px 0; line-height: 1.1; }
+        .speak-btn { background: #f0f4ff; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; margin-bottom: 15px; transition: 0.2s; }
+        .speak-btn:hover { background: #dce4ff; }
 
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        
         .option-btn {
-            padding: 10px;
-            border: 2px solid #f0f0f0;
-            border-radius: 18px;
-            background: white;
-            cursor: pointer;
-            font-size: 15px;
-            font-family: 'Battambang';
-            font-weight: bold;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            padding: 10px; border: 2px solid #f0f0f0; border-radius: 15px; background: white;
+            cursor: pointer; font-family: 'Battambang'; font-weight: bold; font-size: 15px;
+            min-height: 85px; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
-
-        /* Result Styles */
         .correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
         .wrong { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; animation: shake 0.4s; }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        #feedbackText { margin-top: 10px; font-size: 18px; color: #555; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- ផ្ទាំង Login -->
         <div id="login-box">
-            <h2 style="color: var(--primary);">📊 QC Skill Quiz</h2>
-            <p style="color: #666; margin-bottom: 25px;">សូមបញ្ចូលឈ្មោះដើម្បីចាប់ផ្ដើមតេស្ត</p>
+            <h2>🏆 QC Certification</h2>
+            <p style="margin: 15px 0; color: #666;">សូមបញ្ចូលឈ្មោះដើម្បីចាប់ផ្ដើមតេស្ត</p>
             <input type="text" id="staffName" placeholder="ឈ្មោះបុគ្គលិក / 姓名" autocomplete="off">
-            <button class="btn-action" onclick="beginQuiz()">ចាប់ផ្ដើម ➔</button>
+            <button class="btn-action" onclick="startApp()">ចូលរួមតេស្ត ➔</button>
         </div>
 
+        <!-- ផ្ទាំងសំណួរ -->
         <div id="quiz-box">
             <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
-            <p style="font-weight: bold; color: #888; margin-top: 10px;">សំណួរ <span id="qIdx">1</span>/10</p>
+            <p style="font-weight: bold; color: #888;">សំណួរ <span id="qIdx">1</span> / 10</p>
             
-            <div class="chinese-word" id="cnDisplay">...</div>
-            <button class="speak-btn" onclick="playVoiceManual()">🔊</button>
-            
+            <div class="defect-image-box" id="imgBox">
+                <img id="defectImage" src="" alt="Defect Visual">
+            </div>
+
+            <div class="chinese-word" id="wordDisplay">...</div>
+            <button class="speak-btn" onclick="playVoice()">🔊</button>
             <div class="options-grid" id="optGrid"></div>
         </div>
 
+        <!-- ផ្ទាំងលទ្ធផល -->
         <div id="result-box">
-            <h1 style="font-size: 60px; margin-bottom: 10px;">🏆</h1>
-            <h2 id="finalUser" style="font-size: 20px;"></h2>
-            <div id="finalScoreDisplay" style="font-size: 60px; font-weight: bold; color: var(--primary); margin: 10px 0;"></div>
-            
-            <p id="feedbackText" style="margin-bottom: 20px; font-weight: bold;"></p>
-
-            <p id="sendingStatus" style="color: var(--success); font-weight: bold; background: #e8f8f0; padding: 10px; border-radius: 10px;">
-                ✅ រក្សាទុកពិន្ទុរួចរាល់
-            </p>
-            <button class="btn-action" style="margin-top: 20px;" onclick="location.reload()">🔄 ធ្វើតេស្តម្ដងទៀត</button>
+            <h1 style="font-size: 60px;">🥇</h1>
+            <h3 id="finalUserName" style="color:#555;">...</h3>
+            <div id="finalScore" style="font-size: 60px; font-weight: bold; color: var(--primary); margin: 15px 0;">0 / 10</div>
+            <p id="sendingStatus" style="color: var(--success); font-weight: bold;">✅ បញ្ជូនលទ្ធផលចូល Sheet រួចរាល់</p>
+            <button class="btn-action" style="margin-top: 25px;" onclick="location.reload()">ធ្វើតេស្តម្ដងទៀត</button>
         </div>
     </div>
 
     <script>
-        // Database
+        // DATABASE ពេញលេញ ៤៩ ពាក្យ
+        // សេចក្តីណែនាំ៖ ត្រង់ img សូមដាក់ឈ្មោះ File ដែលបងបាន upload ចូល GitHub
         const database = [
-            { cn: "工厂", km: "រោងចក្រ" }, { cn: "车间", km: "រោងជាង / អាគារ" }, { cn: "办公室", km: "ការិយាល័យ" },
-            { cn: "班长", km: "ប្រធានក្រុម" }, { cn: "翻译", km: "អ្នកបកប្រែ" }, { cn: "注意安全", km: "ប្រយ័ត្នសុវត្ថិភាព" },
-            { cn: "上班", km: "ចូលធ្វើការ" }, { cn: "下班", km: "ចេញពីធ្វើការ" }, { cn: "请假", km: "សុំច្បាប់" },
-            { cn: "车架", km: "តួកង់" }, { cn: "前叉", km: "ឆ្ពោះមុខ (Fork)" }, { cn: "车把", km: "ដៃកង់" },
-            { cn: "车圈", km: "ខ្នងកង់" }, { cn: "外胎", km: "សំបកកង់" }, { cn: "脚踏", km: "ឈ្នាន់" },
-            { cn: "链条", km: "ច្រវាក់" }, { cn: "座垫", km: "កែប" }, { cn: "刹车", km: "ហ្វ្រាំង" },
-            { cn: "测量值", km: "តម្លៃវាស់ជាក់ស្តែង" }, { cn: "标准值", km: "តម្លៃស្តង់ដា" }, { cn: "上限", km: "ដែនកំណត់ លើ" },
-            { cn: "下限", km: "ដែនកំណត់ ក្រោម" }, { cn: "趋势图", km: "ក្រាបនិន្នាការ" }, { cn: "合格", km: "ជាប់ (OK)" },
-            { cn: "不合格", km: "ធ្លាក់ (NG)" }, { cn: "开裂", km: "ប្រេះ (Crack)" }, { cn: "焊破", km: "ផ្សាធ្លុះ" },
-            { cn: "漏焊", km: "ភ្លេចផ្សារ" }, { cn: "针眼", km: "ភ្នែកម្ជុល" }, { cn: "凹陷", km: "កំពិត / ផត" },
-            { cn: "焊道偏心", km: "ផ្សារវៀច" }, { cn: "电击伤", km: "ឆេះម៉ាស" }, { cn: "堆焊", km: "ផ្សារទូល" },
-            { cn: "咬边", km: "ស៊ីសាច់បំពង់" }, { cn: "间隙", km: "ចន្លោះ / ហើប" }, { cn: "碰刮伤", km: "ប៉ះទង្គិច / កោស" },
-            { cn: "焊渣", km: "កំទេចផ្សារ" }, { cn: "起泡", km: "ពង / ចូលខ្យល់" }, { cn: "标纸不良", km: "តែមមិនល្អ" },
-            { cn: "修补痕", km: "ស្នាមជួសជុល" }, { cn: "杂质", km: "ធូលី / កំទេចកំទី" }, { cn: "脏污", km: "ប្រឡាក់" },
-            { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង" }, { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា" },
-            { cn: "雾面", km: "ស្រអាប់" }, { cn: "橘皮", km: "សំបកក្រូច" }, { cn: "针孔", km: "រន្ធម្ជុល" },
-            { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ" }, { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ" }
+            { cn: "起泡", km: "ពង / ចូលខ្យល់", img: "qipao.jpg" },
+            { cn: "标纸不良", km: "តែមមិនល្អ", img: "biaozhibuliang.jpg" },
+            { cn: "修补痕", km: "ស្នាមជួសជុល", img: "xiubuhen.jpg" },
+            { cn: "杂质", km: "ធូលី / កំទេចកំទី", img: "zhazhi.jpg" },
+            { cn: "脏污", km: "ប្រឡាក់", img: "zangwu.jpg" },
+            { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង", img: "biaozhiweizhibudui.jpg" },
+            { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា", img: "biaozhibuduiceng.jpg" },
+            { cn: "雾面", km: "ស្រអាប់", img: "wumian.jpg" },
+            { cn: "橘皮", km: "សំបកក្រូច", img: "jupi.jpg" },
+            { cn: "针孔", km: "រន្ធម្ជុល", img: "zhengkong.jpg" },
+            { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ", img: "xiaoguangbuliang.jpg" },
+            { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ", img: "fangqibuliang.jpg" },
+            { cn: "工厂", km: "រោងចក្រ", img: "gongchang.jpg" },
+            { cn: "车间", km: "រោងជាង / អាគារ", img: "chejian.jpg" },
+            { cn: "办公室", km: "ការិយាល័យ", img: "bangongshi.jpg" },
+            { cn: "班长", km: "ប្រធានក្រុម", img: "banzhang.jpg" },
+            { cn: "翻译", km: "អ្នកបកប្រែ", img: "fanyi.jpg" },
+            { cn: "注意安全", km: "ប្រយ័ត្នសុវត្ថិភាព", img: "zhuyianquan.jpg" },
+            { cn: "上班", km: "ចូលធ្វើការ", img: "shangban.jpg" },
+            { cn: "下班", km: "ចេញពីធ្វើការ", img: "xiaban.jpg" },
+            { cn: "请假", km: "សុំច្បាប់", img: "qingjia.jpg" },
+            { cn: "车架", km: "តួកង់", img: "chejian.jpg" },
+            { cn: "前叉", km: "ឆ្ពោះមុខ (Fork)", img: "qiancha.jpg" },
+            { cn: "车把", km: "ដៃកង់", img: "cheba.jpg" },
+            { cn: "车圈", km: "ខ្នងកង់", img: "chequan.jpg" },
+            { cn: "外胎", km: "សំបកកង់", img: "waitai.jpg" },
+            { cn: "脚踏", km: "ឈ្នាន់", img: "jiaota.jpg" },
+            { cn: "链条", km: "ច្រវាក់", img: "liantiao" },
+            { cn: "座垫", km: "កែប", img: "zuodian.jpg" },
+            { cn: "刹车", km: "ហ្វ្រាំង", img: "shache.jpg" },
+            { cn: "测量值", km: "តម្លៃវាស់ជាក់ស្តែង", img: "celiangzhi.jpg" },
+            { cn: "标准值", km: "តម្លៃស្តង់ដា", img: "biaozhunzhi.jpg" },
+            { cn: "上限", km: "ដែនកំណត់ លើ", img: "shangxian.jpg" },
+            { cn: "下限", km: "ដែនកំណត់ ក្រោម", img: "xiaxian.jpg" },
+            { cn: "趋势图", km: "ក្រាបនិន្នាការ", img: "qushitu.jpg" },
+            { cn: "合格", km: "ជាប់ (OK)", img: "hege.jpg" },
+            { cn: "不合格", km: "ធ្លាក់ (NG)", img: "buhege.jpg" },
+            { cn: "开裂", km: "ប្រេះ (Crack)", img: "kailie.jpg" },
+            { cn: "焊破", km: "ផ្សាធ្លុះ", img: "hanpo.jpg" },
+            { cn: "漏焊", km: "ភ្លេចផ្សារ", img: "louhan.jpg" },
+            { cn: "针眼", km: "ភ្នែកម្ជុល", img: "zhenyan.jpg" },
+            { cn: "凹陷", km: "កំពិត / ផត", img: "aoxian.jpg" },
+            { cn: "焊道偏心", km: "ផ្សារវៀច", img: "handaobianxin.jpg" },
+            { cn: "电击伤", km: "ឆេះម៉ាស", img: "dianjishang.jpg" },
+            { cn: "堆焊", km: "ផ្សារទូល (Overlap)", img: "duihan.jpg" },
+            { cn: "咬边", km: "ស៊ីសាច់បំពង់", img: "yaobian.jpg" },
+            { cn: "间隙", km: "ចន្លោះ / ហើប", img: "jianxi.jpg" },
+            { cn: "碰刮伤", km: "ប៉ះទង្គិច / កោស", img: "pengguashang.jpg" },
+            { cn: "焊渣", km: "កំទេចផ្សារ", img: "hanzha.jpg" }
         ];
 
-        let quizUser = "";
-        let qList = [];
-        let cur = 0;
-        let score = 0;
+        let userName = ""; let quizList = []; let cur = 0; let score = 0;
 
-        // Voice Logic (Improved)
-        function speakFix(text) {
-            if ('speechSynthesis' in window) {
-                if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'zh-CN';
-                msg.rate = 0.85; // Slightly faster for natural flow
-                window.speechSynthesis.speak(msg);
-            }
+        function playVoice() {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(quizList[cur].cn);
+            msg.lang = 'zh-CN'; msg.rate = 0.8;
+            window.speechSynthesis.speak(msg);
         }
 
-        function playVoiceManual() {
-            if (qList[cur]) speakFix(qList[cur].cn);
-        }
-
-        function postScore(name, pts) {
-            // ១. អាសយដ្ឋានបាញ់ទិន្នន័យទៅកាន់ Google Form ថ្មីរបស់បង
-    const url = "https://docs.google.com/forms/d/e/1FAIpQLSewAOFk30IYgR9ZIVR8yZozbbprXFzI18P-aZV6XJi8cFCUoQ/formResponse";
-    
-    // ២. បង្កើតទម្រង់ទិន្នន័យឱ្យត្រូវតាម Entry ID ថ្មី
-    const params = new URLSearchParams();
-    params.append("entry.2026832449", name);          // លេខ ID សម្រាប់ Name
-    params.append("entry.1026172260", pts + " / 10"); // លេខ ID សម្រាប់ Score
-
-    // ៣. បញ្ជាឱ្យបាញ់ទិន្នន័យ (រត់ក្នុង Background មិនឱ្យរំខានការលេង)
-    fetch(url, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: params.toString()
-    })
-    .then(() => {
-        console.log("Recorded Success!");
-        document.getElementById('sendingStatus').innerText = "✅ រក្សាទុកពិន្ទុជោគជ័យ";
-    })
-    .catch(e => {
-        console.error("Submission Error:", e);
-    });
-        }
-
-        function beginQuiz() {
-            const inputName = document.getElementById('staffName');
-            quizUser = inputName.value.trim();
-            
-            if(!quizUser) {
-                inputName.style.borderColor = 'red';
-                inputName.focus();
-                return;
-            }
-            
+        function startApp() {
+            userName = document.getElementById('staffName').value.trim();
+            if(!userName) return alert("សូមវាយឈ្មោះសិន!");
             document.getElementById('login-box').style.display = 'none';
             document.getElementById('quiz-box').style.display = 'block';
-            
-            // Randomize and pick 10
-            qList = [...database].sort(() => 0.5 - Math.random()).slice(0, 10);
-            renderQ();
+            quizList = [...database].sort(() => 0.5 - Math.random()).slice(0, 10);
+            showQ();
         }
 
-        function renderQ() {
-            const q = qList[cur];
-            const cnEl = document.getElementById('cnDisplay');
-            cnEl.innerText = q.cn;
-            
-            // Animation reset
-            cnEl.style.opacity = 0;
-            setTimeout(()=> cnEl.style.opacity = 1, 50);
-
+        function showQ() {
+            const q = quizList[cur];
+            document.getElementById('wordDisplay').innerText = q.cn;
             document.getElementById('qIdx').innerText = cur + 1;
-            document.getElementById('pFill').style.width = ((cur) / 10 * 100) + "%";
+            document.getElementById('pFill').style.width = (cur / 10 * 100) + "%";
 
-            // Auto-speak with small delay
-            setTimeout(() => { speakFix(q.cn); }, 500);
+            // បង្ហាញរូបភាពបើមានក្នុង Database
+            const imgBox = document.getElementById('imgBox');
+            const imgTag = document.getElementById('defectImage');
+            if(q.img) {
+                imgTag.src = q.img;
+                imgBox.style.display = 'block';
+            } else {
+                imgBox.style.display = 'none';
+            }
 
-            let wrongOnes = database.filter(x => x.km !== q.km).sort(() => 0.5 - Math.random()).slice(0, 3);
-            let choices = [...wrongOnes, q].sort(() => 0.5 - Math.random());
+            setTimeout(playVoice, 500);
+
+            let options = database.filter(x => x.km !== q.km).sort(() => 0.5 - Math.random()).slice(0, 3);
+            options.push(q);
+            options.sort(() => 0.5 - Math.random());
 
             const grid = document.getElementById('optGrid');
             grid.innerHTML = '';
-            
-            choices.forEach(obj => {
+            options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.innerText = obj.km;
+                btn.innerText = opt.km;
                 btn.onclick = () => {
-                    // Prevent double clicks
-                    const allBtns = document.querySelectorAll('.option-btn');
-                    allBtns.forEach(b => b.disabled = true);
-                    
-                    if(obj.km === q.km) { 
-                        btn.classList.add('correct'); 
-                        score++; 
-                    } else { 
+                    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+                    if(opt.km === q.km) { btn.classList.add('correct'); score++; }
+                    else { 
                         btn.classList.add('wrong');
-                        // Highlight the correct one
-                        allBtns.forEach(b => {
-                            if(b.innerText === q.km) b.classList.add('correct');
-                        });
+                        document.querySelectorAll('.option-btn').forEach(b => { if(b.innerText === q.km) b.classList.add('correct'); });
                     }
-                    
-                    document.getElementById('pFill').style.width = ((cur + 1) / 10 * 100) + "%";
-
-                    setTimeout(() => {
-                        cur++;
-                        if(cur < 10) renderQ();
-                        else finishQuiz();
-                    }, 1200);
+                    setTimeout(() => { cur++; if(cur < 10) showQ(); else showResult(); }, 1200);
                 };
                 grid.appendChild(btn);
             });
         }
 
-        function finishQuiz() {
+        function showResult() {
             document.getElementById('quiz-box').style.display = 'none';
             document.getElementById('result-box').style.display = 'block';
-            
-            document.getElementById('finalUser').innerText = "បេក្ខជន៖ " + quizUser;
-            document.getElementById('finalScoreDisplay').innerText = score + " / 10";
-            
-            const feedback = document.getElementById('feedbackText');
-            if(score >= 7) {
-                feedback.innerText = "អស្ចារ្យណាស់បង! លទ្ធផលល្អណាស់! 🌟";
-                feedback.style.color = "#2ecc71";
-                // Trigger Confetti
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-            } else {
-                feedback.innerText = "កុំបារម្ភ! ព្យាយាមម្ដងទៀត ដើម្បីឱ្យចាំពាក្យបានស្ទាត់! 💪";
-                feedback.style.color = "#f39c12";
-            }
+            document.getElementById('finalScore').innerText = score + " / 10";
+            document.getElementById('finalUserName').innerText = userName;
 
-            postScore(quizUser, score);
+            if(score >= 7) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+            // បាញ់ពិន្ទុអូតូ
+            const url = "https://docs.google.com/forms/d/e/1FAIpQLSewAOFk30IYgR9ZIVR8yZozbbprXFzI18P-aZV6XJi8cFCUoQ/formResponse";
+            const params = new URLSearchParams();
+            params.append("entry.2026832449", userName);
+            params.append("entry.1026172260", score + " / 10");
+            fetch(url, { method: "POST", mode: "no-cors", body: params.toString() });
         }
     </script>
 </body>
 </html>
-
