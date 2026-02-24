@@ -102,6 +102,7 @@
         .btn-primary { background: linear-gradient(135deg, var(--warning-color), #ff6f00); color: white; }
         .btn-secondary { background: linear-gradient(135deg, var(--dark-color), #455a64); color: white; }
         .btn-success { background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; font-size: 14px; padding: 10px 20px; }
+        .btn-info { background: linear-gradient(135deg, #00bcd4, #0097a7); color: white; font-size: 14px; padding: 10px 20px; }
 
         /* ==================== Footer ==================== */
         .footer { position: fixed; bottom: 10px; font-size: 12px; color: rgba(255,255,255,0.7); text-align: center; }
@@ -152,16 +153,42 @@
         <button class="btn-primary" onclick="flipCard()">🔄 ត្រឡប់កាត</button>
         <button class="btn-primary" onclick="nextCard()">បន្ទាប់ ➡️</button>
         <button class="btn-success" onclick="shuffleCards()">🔀 សាចឡើងវិញ</button>
-        <button class="btn-info" onclick="window.location.href='lucky-wheel.html'">
-    🎡 ទៅកងបង្វិលសំណាង
-</button>
+        <button class="btn-info" onclick="window.location.href='lucky-wheel.html'">🎡 ទៅកងបង្វិលសំណាង</button>
     </div>
 
     <div class="footer">💡 Space/Enter=ត្រឡប់, ⬅️➡️=រុករក</div>
 
     <script>
         const vocabList = [
-            // --- ១២ ពាក្យថ្មី (បន្ថែមថ្មី) ---
+            // --- មេរៀនទី ៧ (ឧបករណ៍ជាង) ---
+            { cn: "扳手", py: "(bān shǒu)", km: "សោ / កូនសោ" },
+            { cn: "内六角", py: "(nèi liù jiǎo)", km: "សោ L (Allen Key)" },
+            { cn: "螺丝刀", py: "(luó sī dāo)", km: "ទួរណឺវីស" },
+            { cn: "游标卡尺", py: "(yóu biāo kǎ chǐ)", km: "Pied à coulisse" },
+            { cn: "卷尺", py: "(juǎn chǐ)", km: "ម៉ែត្រខ្សែ (Meter)" },
+            { cn: "扭力扳手", py: "(niǔ lì bān shǒu)", km: "សោតក (Torque)" },
+            { cn: "电钻", py: "(diàn zuàn)", km: "ស្វាន (Drill)" },
+            { cn: "气枪", py: "(qì qiāng)", km: "កាំភ្លើងខ្យល់" },
+            { cn: "叉车", py: "(chā chē)", km: "រថយន្តលើក (Forklift)" },
+            { cn: "锁紧", py: "(suǒ jǐn)", km: "រឹតតឹង" },
+            { cn: "拆卸", py: "(chāi xiè)", km: "ដោះចេញ / រុះរើ" },
+            { cn: "校正", py: "(jiào zhèng)", km: "កែតម្រូវ / សារ៉េ" },
+
+            // --- មេរៀនទី ៦ (បញ្ហាកង់) ---
+            { cn: "刹车失灵", py: "(shā chē shī líng)", km: "ហ្វ្រាំងមិនស៊ី" },
+            { cn: "变速不准", py: "(biàn sù bù zhǔn)", km: "ដូរលេខមិនចូល" },
+            { cn: "轮胎漏气", py: "(lún tāi lòu qì)", km: "សំបកកង់ធ្លាយ" },
+            { cn: "螺丝松动", py: "(luó sī sōng dòng)", km: "ខ្ចៅធូរ" },
+            { cn: "异响", py: "(yì xiǎng)", km: "សំឡេងរំខាន" },
+            { cn: "划痕", py: "(huá hén)", km: "ស្នាមឆ្កូត" },
+            { cn: "掉漆", py: "(diào qī)", km: "របកថ្នាំ" },
+            { cn: "生锈", py: "(shēng xiù)", km: "ច្រែះ" },
+            { cn: "错件", py: "(cuò jiàn)", km: "ដាក់គ្រឿងខុស" },
+            { cn: "漏装", py: "(lòu zhuāng)", km: "ភ្លេចដាក់គ្រឿង" },
+            { cn: "歪斜", py: "(wāi xié)", km: "វៀច / មិនត្រង់" },
+            { cn: "返工", py: "(fǎn gōng)", km: "ធ្វើឡើងវិញ (Rework)" },
+
+            // --- មេរៀនទី ៥ (បញ្ហាថ្នាំ) ---
             { cn: "起泡", py: "(Qǐ pào)", km: "ពង / ចូលខ្យល់" },
             { cn: "标纸不良", py: "(Biāo zhǐ bù liáng)", km: "តែមមិនល្អ" },
             { cn: "修补痕", py: "(Xiū bǔ hén)", km: "ស្នាមជួសជុល / ស្នាមកែ" },
@@ -175,7 +202,7 @@
             { cn: "消光不良", py: "(Xiāo guāng bù liáng)", km: "ទឹកថ្នាំស្រអាប់មិនល្អ" },
             { cn: "防漆不良", py: "(Fáng qī bù liáng)", km: "ការពារទឹកថ្នាំមិនបានល្អ" },
 
-            // --- ៣៧ ពាក្យចាស់ ---
+            // --- មេរៀនទី ១-៤ (ពាក្យចាស់ៗ) ---
             { cn: "工厂", py: "(Gōngchǎng)", km: "រោងចក្រ" },
             { cn: "车间", py: "(Chējiān)", km: "រោងជាង / អាគារ" },
             { cn: "办公室", py: "(Bàngōngshì)", km: "ការិយាល័យ" },
@@ -267,6 +294,4 @@
         init();
     </script>
 </body>
-
 </html>
-
